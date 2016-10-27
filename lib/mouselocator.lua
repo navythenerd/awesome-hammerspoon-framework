@@ -35,10 +35,7 @@ end
 function mod.init(context)
   mod.context = context
   mod.config = require(context.config)
+  mod.keymap = mod.config.keymap
 end
-
-mod.keymap = {
-  {key = "m", callback = mouseHighlight}
-}
 
 return mod

@@ -12,4 +12,10 @@ settings.flux = {
 }
 settings.mode = "sunrise"
 
+settings.keymap = {
+  { key = "-", callback = toggleRedshift },
+  { key = "ö", callback = fluxDecreaseLevel },
+  { key = "ä", callback = fluxIncreaseLevel }
+}
+
 return settings

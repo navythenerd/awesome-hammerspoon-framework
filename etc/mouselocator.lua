@@ -10,4 +10,8 @@ settings.color = {
 settings.linewidth = 5
 settings.diameter = 80
 
+settings.keymap = {
+  {key = "m", callback = mouseHighlight}
+}
+
 return settings

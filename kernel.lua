@@ -96,7 +96,6 @@ function kernel.init()
   kernel.log = hs.logger.new('Kernel', 'info')
 
   startWatchdog()
-  kernel.bindHotkey("r", true, hs.reload)
 
   for i = 48,  57 do table.insert(charset, string.char(i)) end
   for i = 65,  90 do table.insert(charset, string.char(i)) end

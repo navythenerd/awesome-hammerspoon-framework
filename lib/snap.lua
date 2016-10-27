@@ -2,10 +2,8 @@ local mod = {}
 
 mod.name = "Snap"
 mod.signature = "h5pegyy2HDGwA3nBailU"
-mod.version = {}
-mod.version.major = 2016
-mod.version.minor = 10
-mod.author = "Cedrik Kaufmann"
+mod.settings = {}
+mod.context = {}
 mod.keymap = {}
 
 function snapFullscreen()
@@ -127,14 +125,10 @@ function snapRightBottomQuarter()
   end
 end
 
-mod.keymap = {
-  {key = "f", callback = snapFullscreen},
-  {key = "d", callback = snapLeftHalf},
-  {key = "g", callback = snapRightHalf},
-  {key = "e", callback = snapLeftTopQuarter},
-  {key = "r", callback = snapRightTopQuarter},
-  {key = "c", callback = snapLeftBottomQuarter},
-  {key = "v", callback = snapRightBottomQuarter}
-}
+function mod.init(context)
+  mod.context = context
+  mod.settings = require(context.config)
+  mod.keymap = mod.settings.keymap
+end
 
 return mod

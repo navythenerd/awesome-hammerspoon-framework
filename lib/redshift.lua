@@ -196,12 +196,8 @@ function mod.init(context)
     mod.mode.sunrise = false
     switchMode("flux")
   end
-end
 
-mod.keymap = {
-  { key = "-", callback = toggleRedshift },
-  { key = "ö", callback = fluxDecreaseLevel },
-  { key = "ä", callback = fluxIncreaseLevel }
-}
+  mod.keymap = mod.settings.keymap
+end
 
 return mod
