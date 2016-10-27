@@ -107,25 +107,25 @@ The keymap provided by this file is used by the `Kernel` as global hotkey-config
   ```
 4. Add a keymap to your configuration file `etc/myfirstextension.lua`.
   ```
-  local settings = {}
+    local settings = {}
 
-  // Make sure functions foo and bar are available
-  // This will bind [CMD][ALT][CTRL][A] to function 'foo' and [CMD][ALT][CTRL][SHIFT][B] to function 'bar'
-  settings.keymap = {
-    {key = "a", callback = foo},
-    {key = "b", alt = true, callback = bar}
-  }
+    // Make sure functions foo and bar are available
+    // This will bind [CMD][ALT][CTRL][A] to function 'foo' and [CMD][ALT][CTRL][SHIFT][B] to function 'bar'
+    settings.keymap = {
+      {key = "a", callback = foo},
+      {key = "b", alt = true, callback = bar}
+    }
 
-  return settings
+    return settings
   ```
 3. Add your new created extension to the `extensions.native` table in `etc/extensions.lua` to load it.
   ```
-  ...
-  extensions.native = {
-    "...",
-    "...",
-    "myfirstextension",
-    "..."
-  }
-  ...
+    ...
+    extensions.native = {
+      "...",
+      "...",
+      "myfirstextension",
+      "..."
+    }
+    ...
   ```
