@@ -81,29 +81,29 @@ The keymap provided by this file is used by the `Kernel` as global hotkey-config
 2. Create your configuration file (Not necessary, but don't try to load if there is no one).
 2. Add the base information needed to provide a native extension:
   ```
-  local mod = {}
+    local mod = {}
 
-  mod.name = "MyFirstExtension" // Is used as lowercase string for `res` context and configuration
-  mod.signature = "h5pegyy2HDGwA3nBailU" // Is checked by kernel to identify native extension
-  mod.keymap = {}
-  mod.settings = {}
-  mod.context = {}
+    mod.name = "MyFirstExtension" // Is used as lowercase string for `res` context and configuration
+    mod.signature = "h5pegyy2HDGwA3nBailU" // Is checked by kernel to identify native extension
+    mod.keymap = {}
+    mod.settings = {}
+    mod.context = {}
 
-  function mod.init(context)
-    // Called by kernel to bootrap extension
+    function mod.init(context)
+      // Called by kernel to bootrap extension
 
-    // Save the provided context information injected from kernel
-    mod.context = context
+      // Save the provided context information injected from kernel
+      mod.context = context
 
-    // Load your configuration file
-    mod.settings = require(context.config)
+      // Load your configuration file
+      mod.settings = require(context.config)
 
-    // You should provide at least the keymap configuration in your configuration, so load the keymap now (Keymap is not needed, leave keymap var nil)
-    // The var mod.keymap will automatically be checked by the kernel and bound
-    mod.keymap = mod.settings.keymap
-  end
+      // You should provide at least the keymap configuration in your configuration, so load the keymap now (Keymap is not needed, leave keymap var nil)
+      // The var mod.keymap will automatically be checked by the kernel and bound
+      mod.keymap = mod.settings.keymap
+    end
 
-  return mod
+    return mod
   ```
 4. Add a keymap to your configuration file `etc/myfirstextension.lua`.
   ```
