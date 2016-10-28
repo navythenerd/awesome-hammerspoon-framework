@@ -13,5 +13,6 @@ env.base = os.getenv("HOME") .. "/.hammerspoon/"
 env.extensions = "lib/"
 env.config = "etc/"
 env.resources = "res/"
+env.shell = "/bin/bash"
 
 return env

@@ -13,6 +13,10 @@ kernel.config.env = require("etc/environment")
 kernel.config.keymap = require("etc/keymap")
 kernel.cronjob = {}
 kernel.helpers = {}
+kernel.shell = {}
+kernel.shell.stdOut = {}
+kernel.shell.stdErr = {}
+kernel.shell.exitCode = {}
 
 local charset = {}
 
@@ -33,6 +37,12 @@ function startWatchdog()
   kernel.log.i("Starting watchdog")
   hs.pathwatcher.new(kernel.config.env.base, reloadConfig):start()
   kernel.log.i("Watchdog started")
+end
+
+function shellCallback(exitCode, stdOut, stdErr)
+  table.insert(kernel.shell.stdOut, stdOut)
+  table.insert(kernel.shell.stdErr, stdErr)
+  table.insert(kernel.shell.exitCode, exitCode)
 end
 
 function kernel.helpers.randomString(length)
@@ -68,6 +78,12 @@ function kernel.bindHotkey(key, alt, fn)
   else
     hs.hotkey.bind(kernel.config.keymap.hyper, key, fn)
   end
+end
+
+function kernel.execute(input)
+  local shell = hs.task.new(kernel.config.env.shell, shellCallback)
+  shell:setInput(input)
+  shell:start()
 end
 
 function bootstrapNative(extension)

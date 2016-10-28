@@ -10,7 +10,7 @@ This is an early version with a very basic feature set.
    ```
    git clone https://gitlab.com/ckaufmann/hammerspoon-framework.git ~/.hammerspoon
    ```
-2. Edit `etc/extensions.lua` to enable/disable the extensions you want (by default all supplied extensions are enabled).
+2. Edit `etc/extensions.lua` to enable/disable the extensions you want (by default all supplied extensions, excepting `BrewUpdater`, are enabled).
 3. Edit the corresponding config files for the extensions in `etc` directory (Read below to learn more about configuration).
 
 ### Extensions included
@@ -38,6 +38,9 @@ By default the following extensions are supplied (Inspiration by [Hammerspoon's 
     - quarter-screen-left-bottom: `[CMD][ALT][CTRL][C]`
     - quarter-screen-right-bottom: `[CMD][ALT][CTRL][V]`
   - Config can be found at `etc/snap.lua`.
+- BrewUpdater - Simple cronjob like task to frequently upgrade installed homebrew packages
+  - Manual update through `[CMD][ALT][CTRL][SHIFT][U]`
+  - Settings located at `etc/brewupdater.lua`
 
 ## General stucture
 
@@ -55,6 +58,9 @@ This is the main framework file which is managing and bootstrapping any further 
 
 - Hot-realoding of configuration: This function is triggered everytime any file changes in the configuration is detetected and causes a reload of the hammerspoon configuration.
 - Hotkey-binding: This function can bind any function to the provided key and global hotkey. There is no need to use this function if you use native-extensions, otherwise you can use `kernel.bindHotkey(key, alt, fn)` (key - string, alt - boolean, fn - function) to manually bootstrap third-party-extensions.
+- Shell: Kernel provides basic command execution through default shell defined in environment table.
+  - Command-Execution: `kernel.execute(input)`
+  - STD/IO (Table): `kernel.shell.stdOut`, `kernel.shell.stdIn`, `kernel.shell.exitCode`
 - Helper-functions: This functions should provide some easy-to-use features not natively supplied by lua
   - `kernel.helpers.randomString(length)`: Generates a random string of the given length.
   - `kernel.helpers.getSunrise()`: Get sunrise information based on your location.
