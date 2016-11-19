@@ -2,8 +2,6 @@ local mod = {}
 
 mod.name = "BrewUpdater"
 mod.signature = "h5pegyy2HDGwA3nBailU"
-mod.keymap = {}
-mod.settings = {}
 mod.context = {}
 mod.cronjob = {}
 mod.binary = {}
@@ -20,10 +18,8 @@ end
 
 function mod.init(context)
   mod.context = context
-  mod.settings = require(context.config)
-  mod.binary = mod.settings.brew .. "./brew"
-  mod.keymap = mod.settings.keymap
-  mod.cronjob = hs.timer.doAt(mod.settings.updateTime, mod.settings.updateFreq, updateBrew)
+  mod.binary = mod.context.config.brew .. "./brew"
+  mod.cronjob = hs.timer.doAt(mod.context.config.updateTime, mod.context.config.updateFreq, updateBrew)
 end
 
 return mod

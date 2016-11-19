@@ -7,9 +7,8 @@
 local extensions = {}
 
 extensions.native = {
-  "caffeine",
   "snap",
-  "redshift",
+  "caffeine",
   "mouselocator"
 }
 

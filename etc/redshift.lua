@@ -10,7 +10,7 @@ settings.flux = {
   {0.9, 5800},
   {1, 6500}
 }
-settings.mode = "sunrise"
+settings.mode = "flux"
 
 settings.keymap = {
   { key = "-", callback = toggleRedshift },

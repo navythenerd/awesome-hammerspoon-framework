@@ -57,6 +57,7 @@ This is the main framework file which is managing and bootstrapping any further 
 #### Kernel Features
 
 - Hot-realoding of configuration: This function is triggered everytime any file changes in the configuration is detetected and causes a reload of the hammerspoon configuration.
+- Kernel own require function called through: `kernel.prequire(...)`, this function will return the loaded file if its exist otherwise the return value is `nil`.
 - Hotkey-binding: This function can bind any function to the provided key and global hotkey. There is no need to use this function if you use native-extensions, otherwise you can use `kernel.bindHotkey(key, alt, fn)` (key - string, alt - boolean, fn - function) to manually bootstrap third-party-extensions.
 - Shell: Kernel provides basic command execution through default shell defined in environment table.
   - Command-Execution: `kernel.execute(input)`
@@ -84,29 +85,21 @@ The keymap provided by this file is used by the `Kernel` as global hotkey-config
 ## Extensions Development
 
 1. Create your own extension file `lib/myfirstextension.lua`.
-2. Create your configuration file (Not necessary, but don't try to load if there is no one).
+2. Create your configuration file.
 2. Add the base information needed to provide a native extension:
   ```
     local mod = {}
 
     mod.name = "MyFirstExtension" // Is used as lowercase string for `res` context and configuration
     mod.signature = "h5pegyy2HDGwA3nBailU" // Is checked by kernel to identify native extension
-    mod.keymap = {}
-    mod.settings = {}
     mod.context = {}
 
     function mod.init(context)
       // Called by kernel to bootrap extension
 
-      // Save the provided context information injected from kernel
+      // Save the provided context information injected from kernel, this includes config file through mod.context.config and keymap through mod.context.keymap
+      // Keymap will automatically loaded by the kernel
       mod.context = context
-
-      // Load your configuration file
-      mod.settings = require(context.config)
-
-      // You should provide at least the keymap configuration in your configuration, so load the keymap now (Keymap is not needed, leave keymap var nil)
-      // The var mod.keymap will automatically be checked by the kernel and bound
-      mod.keymap = mod.settings.keymap
     end
 
     return mod

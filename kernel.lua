@@ -33,6 +33,14 @@ function reloadConfig(files)
   end
 end
 
+function prequire(...)
+  local status, lib = pcall(require, ...)
+
+  if (status) then return lib end
+
+  return nil
+end
+
 function startWatchdog()
   kernel.log.i("Starting watchdog")
   hs.pathwatcher.new(kernel.config.env.base, reloadConfig):start()
@@ -91,12 +99,12 @@ function bootstrapNative(extension)
     context = {}
     context.id = kernel.helpers.randomString(20)
     context.resources = kernel.config.env.resources .. string.lower(extension.name) .. "/"
-    context.config = kernel.config.env.config .. string.lower(extension.name)
+    context.config = prequire(kernel.config.env.config .. string.lower(extension.name))
     mod.init(context)
   end
 
-  if mod.keymap ~= nil then
-    for n, keymap in ipairs(mod.keymap) do
+  if mod.context.config.keymap ~= nil then
+    for n, keymap in ipairs(mod.context.config.keymap) do
       if keymap.key ~= nil and type(keymap.callback) == 'function' then
         if keymap.alt then
           kernel.bindHotkey(keymap.key, true, keymap.callback)
@@ -122,27 +130,28 @@ function kernel.bootstrap(extensions)
   kernel.log.i("Starting bootstrap process")
 
   for i, extension in ipairs(extensions.native) do
-    mod = require(kernel.config.env.extensions .. extension)
+    mod = prequire(kernel.config.env.extensions .. extension)
 
     if (mod ~= nil and mod ~= true and mod.signature ~= nil and mod.signature == kernel.module.signature) then
       kernel.log.i("Signature found, bootstrapping native extension " .. mod.name)
 
       bootstrapNative(mod)
     else
-      kernel.log.e("Don't know how to bootstrap " .. extension .. ". Perhaps manual bootstrapping is necessary.")
+      kernel.log.e("Error while trying to boostrap " .. extension .. ". Perhaps manual bootstrapping is necessary or extension doesn't exist.")
     end
   end
 
   if extensions.thirdparty ~= nil then
-    bootstrap = require("etc/bootstrap")
+    bootstrap = prequire("etc/bootstrap")
 
-    for i, extension in ipairs(extensions.thirdparty) do
-      mod = require(kernel.config.env.extensions .. extension)
+    if (bootstrap ~= nil) then
+      for i, extension in ipairs(extensions.thirdparty) do
+        kernel.log.i("Bootstrapping third-party extension " .. extension)
+        mod = prequire(kernel.config.env.extensions .. extension)
 
-      kernel.log.i("Bootstrapping third-party extension " .. extension)
-
-      if bootstrap[extension] ~= nil and type(bootstrap[extension]) == 'function' then
-        bootstrap[extension](mod)
+        if mod ~= nil and bootstrap[extension] ~= nil and type(bootstrap[extension]) == 'function' then
+          bootstrap[extension](mod)
+        end
       end
     end
   end

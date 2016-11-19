@@ -2,9 +2,7 @@ local mod = {}
 
 mod.name = "Snap"
 mod.signature = "h5pegyy2HDGwA3nBailU"
-mod.settings = {}
 mod.context = {}
-mod.keymap = {}
 
 function snapFullscreen()
   if hs.window.focusedWindow() then
@@ -127,8 +125,6 @@ end
 
 function mod.init(context)
   mod.context = context
-  mod.settings = require(context.config)
-  mod.keymap = mod.settings.keymap
 end
 
 return mod

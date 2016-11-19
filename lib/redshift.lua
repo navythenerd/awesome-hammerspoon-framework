@@ -2,12 +2,6 @@ local mod = {}
 
 mod.name = "Redshift"
 mod.signature = "h5pegyy2HDGwA3nBailU"
-mod.version = {}
-mod.version.major = 2016
-mod.version.minor = 10
-mod.version.rev = 2
-mod.author = "Cedrik Kaufmann"
-mod.settings = {}
 mod.context = {}
 mod.cronjob = {}
 mod.menu = {}
@@ -16,7 +10,6 @@ mod.mode = {}
 mod.mode.sunrise = true
 mod.mode.flux = false
 mod.fluxLevel = {}
-mod.keymap = {}
 
 -- RGB values for whitepoint colors at different color temperatures.
 -- This table is the same one used in Redshift:
@@ -87,7 +80,7 @@ local WHITEPOINT_COLORS = {
 function setFluxLevel(level)
     mod.fluxLevel = level
 
-    local targetBrightness, targetColorTemp = table.unpack(mod.settings.flux[level])
+    local targetBrightness, targetColorTemp = table.unpack(mod.context.config.flux[level])
 
     local targetColorTempIx = math.floor((targetColorTemp - 1000) / 100)
     local targetWhitepoint = WHITEPOINT_COLORS[targetColorTempIx + 1]
@@ -117,21 +110,21 @@ function fluxDecreaseLevel()
 end
 
 function fluxIncreaseLevel()
-  if mod.fluxLevel < #mod.settings.flux and mod.mode.flux and mod.enabled then
+  if mod.fluxLevel < #mod.context.config.flux and mod.mode.flux and mod.enabled then
     setFluxLevel(mod.fluxLevel + 1)
   end
 end
 
 function startRedshift()
-  if mod.settings.dayColorTemp ~= nil then
-    hs.redshift.start(mod.settings.colorTemp, mod.settings.sunrise.sunset, mod.settings.sunrise.sunrise, mod.settings.transition, false, nil, mod.settings.dayColorTemp)
+  if mod.context.config.dayColorTemp ~= nil then
+    hs.redshift.start(mod.context.config.colorTemp, mod.sunrise.sunset, mod.sunrise.sunrise, mod.context.config.transition, false, nil, mod.context.config.dayColorTemp)
   else
-    hs.redshift.start(mod.settings.colorTemp, mod.settings.sunrise.sunset, mod.settings.sunrise.sunrise, mod.settings.transition)
+    hs.redshift.start(mod.context.config.colorTemp, mod.sunrise.sunset, mod.sunrise.sunrise, mod.context.config.transition)
   end
 end
 
 function refreshSunrise()
-  mod.settings.sunrise = kernel.helpers.getSunrise()
+  mod.sunrise = kernel.helpers.getSunrise()
   hs.redshift.stop()
   startRedshift()
   hs.alert.show("Refresh sunrise triggered")
@@ -143,7 +136,7 @@ function toggleRedshift()
   end
 
   if mod.mode.flux then
-    setFluxLevel(#mod.settings.flux)
+    setFluxLevel(#mod.context.config.flux)
   end
 
   if mod.enabled then
@@ -155,7 +148,7 @@ end
 
 function switchMode(mode)
   if mode == "sunrise" then
-    setFluxLevel(#mod.settings.flux)
+    setFluxLevel(#mod.context.config.flux)
     startRedshift()
     mod.mode.flux = false
     mod.mode.sunrise = true
@@ -178,26 +171,23 @@ end
 
 function mod.init(context)
   mod.context = context
-  mod.settings = require(mod.context.config)
-  mod.settings.sunrise = kernel.helpers.getSunrise()
-  setFluxLevel(#mod.settings.flux)
-  mod.fluxLevel = #mod.settings.flux
-  mod.cronjob = hs.timer.doAt(mod.settings.sunriseRefreshTime, hs.timer.hours(24), refreshSunrise)
+  mod.sunrise = kernel.helpers.getSunrise()
+  setFluxLevel(#mod.context.config.flux)
+  mod.fluxLevel = #mod.context.config.flux
+  mod.cronjob = hs.timer.doAt(mod.context.config.sunriseRefreshTime, hs.timer.hours(24), refreshSunrise)
   mod.menu = hs.menubar.new()
   mod.menu:setTitle("Redshift")
   mod.menu:setMenu(populateMenu)
 
-  if mod.settings.mode == "sunrise" then
+  if mod.context.config.mode == "sunrise" then
     mod.mode.flux = false
     mod.mode.sunrise = true
     switchMode("sunrise")
-  elseif mod.settings.mode == "flux" then
+  elseif mod.context.config.mode == "flux" then
     mod.mode.flux = true
     mod.mode.sunrise = false
     switchMode("flux")
   end
-
-  mod.keymap = mod.settings.keymap
 end
 
 return mod

@@ -2,8 +2,6 @@ local mod={}
 
 mod.name = "Mouselocator"
 mod.signature = "h5pegyy2HDGwA3nBailU"
-mod.keymap = {}
-mod.config = {}
 mod.context = {}
 
 local mouseCircle = nil
@@ -20,12 +18,12 @@ function mouseHighlight()
   -- Get the current co-ordinates of the mouse pointer
   mousepoint = hs.mouse.getAbsolutePosition ()
   -- Prepare a big red circle around the mouse pointer
-  local diameter = mod.config.diameter
+  local diameter = mod.context.config.diameter
   local radius = math.floor(diameter / 2)
   mouseCircle = hs.drawing.circle(hs.geometry.rect(mousepoint.x-radius, mousepoint.y-radius, diameter, diameter))
-  mouseCircle:setStrokeColor(mod.config.color)
+  mouseCircle:setStrokeColor(mod.context.config.color)
   mouseCircle:setFill(false)
-  mouseCircle:setStrokeWidth(mod.config.linewidth)
+  mouseCircle:setStrokeWidth(mod.context.config.linewidth)
   mouseCircle:show()
 
   -- Set a timer to delete the circle after 3 seconds
@@ -34,8 +32,6 @@ end
 
 function mod.init(context)
   mod.context = context
-  mod.config = require(context.config)
-  mod.keymap = mod.config.keymap
 end
 
 return mod
