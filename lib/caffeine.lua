@@ -1,7 +1,6 @@
 local mod = {}
 
 mod.name = "Caffeine"
-mod.signature = "h5pegyy2HDGwA3nBailU"
 mod.context = {}
 
 function menuOnClick()
@@ -34,6 +33,11 @@ function mod.init(context)
     mod.menubar:setClickCallback(menuOnClick)
     setIcon()
   end
+end
+
+function mod.unload()
+  hs.caffeinate.set("displayIdle", false, true)
+  mod.menubar:delete()
 end
 
 return mod

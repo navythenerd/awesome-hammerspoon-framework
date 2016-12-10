@@ -1,7 +1,6 @@
 local mod = {}
 
 mod.name = "Redshift"
-mod.signature = "h5pegyy2HDGwA3nBailU"
 mod.context = {}
 mod.cronjob = {}
 mod.menu = {}

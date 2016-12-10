@@ -5,18 +5,15 @@
 
 local kernel = {}
 
-kernel.author = "Cedrik Kaufmann"
-kernel.module = {}
-kernel.module.signature = "h5pegyy2HDGwA3nBailU"
 kernel.config = {}
-kernel.config.env = require("etc/environment")
-kernel.config.keymap = require("etc/keymap")
-kernel.cronjob = {}
+kernel.config.env  = {}
+kernel.config.keymap = {}
 kernel.helpers = {}
 kernel.shell = {}
 kernel.shell.stdOut = {}
 kernel.shell.stdErr = {}
 kernel.shell.exitCode = {}
+kernel.extensions = {}
 
 local charset = {}
 
@@ -88,19 +85,30 @@ function kernel.bindHotkey(key, alt, fn)
   end
 end
 
+function kernel.unbindHotkey(key, alt)
+  if alt then
+    hs.hotkey.deleteAll(kernel.config.keymap.hyper_shift, key)
+  else
+    hs.hotkey.deleteAll(kernel.config.keymap.hyper, key)
+  end
+end
+
 function kernel.execute(input)
   local shell = hs.task.new(kernel.config.env.shell, shellCallback)
   shell:setInput(input)
   shell:start()
 end
 
-function bootstrapNative(extension)
+function bootstrapExtension(extension)
   if mod.init ~= nil and type(mod.init == 'function') then
-    context = {}
+    local context = {}
     context.id = kernel.helpers.randomString(20)
     context.resources = kernel.config.env.resources .. string.lower(extension.name) .. "/"
     context.config = prequire(kernel.config.env.config .. string.lower(extension.name))
+
     mod.init(context)
+
+    table.insert(kernel.extensions, mod)
   end
 
   if mod.context.config.keymap ~= nil then
@@ -119,6 +127,9 @@ end
 function kernel.init()
   kernel.log = hs.logger.new('Kernel', 'info')
 
+  kernel.config.env = prequire("etc/environment")
+  kernel.config.keymap = prequire("etc/keymap")
+
   startWatchdog()
 
   for i = 48,  57 do table.insert(charset, string.char(i)) end
@@ -129,28 +140,35 @@ end
 function kernel.bootstrap(extensions)
   kernel.log.i("Starting bootstrap process")
 
-  for i, extension in ipairs(extensions.native) do
+  for i, extension in ipairs(extensions) do
     mod = prequire(kernel.config.env.extensions .. extension)
 
-    if (mod ~= nil and mod ~= true and mod.signature ~= nil and mod.signature == kernel.module.signature) then
-      kernel.log.i("Signature found, bootstrapping native extension " .. mod.name)
+    if (mod ~= nil and mod ~= true) then
+      kernel.log.i("Bootstrapping extension " .. mod.name)
 
-      bootstrapNative(mod)
+      bootstrapExtension(mod)
     else
-      kernel.log.e("Error while trying to boostrap " .. extension .. ". Perhaps manual bootstrapping is necessary or extension doesn't exist.")
+      kernel.log.e("Error while trying to boostrap " .. extension .. ".")
     end
   end
+end
 
-  if extensions.thirdparty ~= nil then
-    bootstrap = prequire("etc/bootstrap")
+function kernel.unloadAll()
+  for i, extension in ipairs(kernel.extensions) do
+    kernel.log.i("Unload extension " .. extension.name)
 
-    if (bootstrap ~= nil) then
-      for i, extension in ipairs(extensions.thirdparty) do
-        kernel.log.i("Bootstrapping third-party extension " .. extension)
-        mod = prequire(kernel.config.env.extensions .. extension)
+    if extension.unload ~= nil and type(extension.unload == 'function') then
+      extension.unload()
+    end
 
-        if mod ~= nil and bootstrap[extension] ~= nil and type(bootstrap[extension]) == 'function' then
-          bootstrap[extension](mod)
+    if extension.context.config.keymap ~= nil then
+      for n, keymap in ipairs(extension.context.config.keymap) do
+        if keymap.key ~= nil then
+          if keymap.alt then
+            kernel.unbindHotkey(keymap.key, true)
+          else
+            kernel.unbindHotkey(keymap.key, false)
+          end
         end
       end
     end

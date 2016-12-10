@@ -1,7 +1,6 @@
 local mod={}
 
 mod.name = "Mouselocator"
-mod.signature = "h5pegyy2HDGwA3nBailU"
 mod.context = {}
 
 local mouseCircle = nil

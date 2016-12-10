@@ -4,14 +4,10 @@
   The kernel loads this file to know which extensions should be loaded.
 ]]
 
-local extensions = {}
-
-extensions.native = {
+local extensions = {
   "snap",
-  "caffeine",
-  "mouselocator"
+  "mouselocator",
+  "caffeine"
 }
-
-extensions.thirdparty = {}
 
 return extensions

@@ -1,7 +1,6 @@
 local mod = {}
 
 mod.name = "Snap"
-mod.signature = "h5pegyy2HDGwA3nBailU"
 mod.context = {}
 
 function snapFullscreen()

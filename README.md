@@ -10,7 +10,7 @@ This is an early version with a very basic feature set.
    ```
    git clone https://gitlab.com/ckaufmann/hammerspoon-framework.git ~/.hammerspoon
    ```
-2. Edit `etc/extensions.lua` to enable/disable the extensions you want (by default all supplied extensions, excepting `BrewUpdater`, are enabled).
+2. Edit `etc/extensions.lua` to enable/disable the extensions you want (by default all supplied extensions, excepting `BrewUpdater`, `Redshift`, are enabled).
 3. Edit the corresponding config files for the extensions in `etc` directory (Read below to learn more about configuration).
 
 ### Extensions included
@@ -68,11 +68,7 @@ This is the main framework file which is managing and bootstrapping any further 
 
 ### Extensions.lua
 
-This file is used to load extensions. There are provided two tables `extensions.native` and `extensions.thirdparty` add your extensions as string to the table and the kernel will bootstrap them from `lib` directory.
-
-### Bootstrap.lua
-
-This file is used to provide further boostrap function for third-party-extensions.
+This file is used to load extensions. There is provided one table `extensions` add your extensions as string to the table and the kernel will bootstrap them from `lib` directory.
 
 ### Environment.lua
 
@@ -91,15 +87,19 @@ The keymap provided by this file is used by the `Kernel` as global hotkey-config
     local mod = {}
 
     mod.name = "MyFirstExtension" // Is used as lowercase string for `res` context and configuration
-    mod.signature = "h5pegyy2HDGwA3nBailU" // Is checked by kernel to identify native extension
     mod.context = {}
 
     function mod.init(context)
-      // Called by kernel to bootrap extension
+      -- Called by kernel to bootstrap extension
 
-      // Save the provided context information injected from kernel, this includes config file through mod.context.config and keymap through mod.context.keymap
-      // Keymap will automatically loaded by the kernel
+      -- Save the provided context information injected from kernel, this includes config file through mod.context.config and keymap through mod.context.keymap
+      -- Keymap will automatically be loaded and bound by the kernel
       mod.context = context
+    end
+
+    function mod.unload()
+      -- Unload all you have created e.g. timers, menubars, ...
+      -- Don't unload keymap manually, this automatically done by kernel
     end
 
     return mod
@@ -108,8 +108,8 @@ The keymap provided by this file is used by the `Kernel` as global hotkey-config
   ```
     local settings = {}
 
-    // Make sure functions foo and bar are available
-    // This will bind [CMD][ALT][CTRL][A] to function 'foo' and [CMD][ALT][CTRL][SHIFT][B] to function 'bar'
+    -- Make sure functions foo and bar are available
+    -- This will bind [CMD][ALT][CTRL][A] to function 'foo' and [CMD][ALT][CTRL][SHIFT][B] to function 'bar'
     settings.keymap = {
       {key = "a", callback = foo},
       {key = "b", alt = true, callback = bar}
@@ -117,10 +117,10 @@ The keymap provided by this file is used by the `Kernel` as global hotkey-config
 
     return settings
   ```
-3. Add your new created extension to the `extensions.native` table in `etc/extensions.lua` to load it.
+3. Add your new created extension to the `extensions` table in `etc/extensions.lua` to load it.
   ```
     ...
-    extensions.native = {
+    local extensions = {
       "...",
       "...",
       "myfirstextension",

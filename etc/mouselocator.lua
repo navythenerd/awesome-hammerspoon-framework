@@ -4,10 +4,10 @@ settings.color = {
   red=1,
   blue=0,
   green=0,
-  alpha=1
+  alpha=0.6
 }
 
-settings.linewidth = 5
+settings.linewidth = 3
 settings.diameter = 80
 
 settings.keymap = {
