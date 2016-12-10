@@ -57,7 +57,7 @@ This is the main framework file which is managing and bootstrapping any further 
 #### Kernel Features
 
 - Hot-realoding of configuration: This function is triggered everytime any file changes in the configuration is detetected and causes a reload of the hammerspoon configuration.
-- Kernel own require function called through: `kernel.prequire(...)`, this function will return the loaded file if its exist otherwise the return value is `nil`.
+- Kernel own require function called through: `prequire(...)`, this function will return the loaded file if its exist otherwise the return value is `nil`.
 - Hotkey-binding: This function can bind any function to the provided key and global hotkey. There is no need to use this function if you use native-extensions, otherwise you can use `kernel.bindHotkey(key, alt, fn)` (key - string, alt - boolean, fn - function) to manually bootstrap third-party-extensions.
 - Shell: Kernel provides basic command execution through default shell defined in environment table.
   - Command-Execution: `kernel.execute(input)`
