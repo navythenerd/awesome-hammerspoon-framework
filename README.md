@@ -61,7 +61,7 @@ This is the main framework file which is managing and bootstrapping any further 
 - Hotkey-binding: This function can bind any function to the provided key and global hotkey. There is no need to use this function if you use native-extensions, otherwise you can use `kernel.bindHotkey(key, alt, fn)` (key - string, alt - boolean, fn - function) to manually bootstrap third-party-extensions.
 - Shell: Kernel provides basic command execution through default shell defined in environment table.
   - Command-Execution: `kernel.execute(input)`
-  - STD/IO (Table): `kernel.shell.stdOut`, `kernel.shell.stdIn`, `kernel.shell.exitCode`
+  - STD/IO (Table): `kernel.shell.stdOut`, `kernel.shell.stdErr`, `kernel.shell.exitCode`
 - Helper-functions: This functions should provide some easy-to-use features not natively supplied by lua
   - `kernel.helpers.randomString(length)`: Generates a random string of the given length.
   - `kernel.helpers.getSunrise()`: Get sunrise information based on your location.
