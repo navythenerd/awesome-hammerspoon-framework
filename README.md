@@ -10,7 +10,7 @@ This is an early version with a very basic feature set.
    ```
    git clone https://gitlab.com/ckaufmann/hammerspoon-framework.git ~/.hammerspoon
    ```
-2. Edit `etc/extensions.lua` to enable/disable the extensions you want (by default all supplied extensions, excepting `BrewUpdater`, `Redshift`, are enabled).
+2. Edit `etc/extensions.lua` to enable/disable the extensions you want (by default all supplied extensions, except `Redshift`, are enabled).
 3. Edit the corresponding config files for the extensions in `etc` directory (Read below to learn more about configuration).
 
 ### Extensions included
@@ -38,9 +38,6 @@ By default the following extensions are supplied (Inspiration by [Hammerspoon's 
     - quarter-screen-left-bottom: `[CMD][ALT][CTRL][C]`
     - quarter-screen-right-bottom: `[CMD][ALT][CTRL][V]`
   - Config can be found at `etc/snap.lua`.
-- BrewUpdater - Simple cronjob like task to frequently upgrade installed homebrew packages
-  - Manual update through `[CMD][ALT][CTRL][SHIFT][U]`
-  - Settings located at `etc/brewupdater.lua`
 
 ## General stucture
 
@@ -87,7 +84,6 @@ The keymap provided by this file is used by the `Kernel` as global hotkey-config
     local mod = {}
 
     mod.name = "MyFirstExtension" // Is used as lowercase string for `res` context and configuration
-    mod.context = {}
 
     function mod.init(context)
       -- Called by kernel to bootstrap extension
@@ -99,7 +95,7 @@ The keymap provided by this file is used by the `Kernel` as global hotkey-config
 
     function mod.unload()
       -- Unload all you have created e.g. timers, menubars, ...
-      -- Don't unload keymap manually, this automatically done by kernel
+      -- Don't unload keymap manually, this will be automatically done by kernel
     end
 
     return mod

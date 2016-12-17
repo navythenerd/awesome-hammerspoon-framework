@@ -1,8 +1,8 @@
 local settings = {}
 
 settings.keymap = {
-  {key = "s", callback = menuOnClick},
-  {key = "l", callback = lockScreen}
+  {key = "s", callback = caffeineMenuIconOnClick},
+  {key = "l", callback = caffeineLockScreen}
 }
 
 return settings

@@ -172,6 +172,8 @@ function kernel.unloadAll()
         end
       end
     end
+
+    table.remove(kernel.extensions, i)
   end
 end
 

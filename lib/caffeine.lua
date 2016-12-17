@@ -1,19 +1,16 @@
 local mod = {}
-
 mod.name = "Caffeine"
-mod.context = {}
 
-function menuOnClick()
+function caffeineMenuIconOnClick()
   if hs.caffeinate.get("displayIdle") then
     hs.caffeinate.set("displayIdle", false, true)
   else
     hs.caffeinate.set("displayIdle", true, true)
   end
-
-  setIcon()
+  caffeineSetIcon()
 end
 
-function setIcon()
+function caffeineSetIcon()
   if hs.caffeinate.get("displayIdle") then
     mod.menubar:setIcon(mod.context.resources .. "caffeineIconActive.tiff")
   else
@@ -21,17 +18,16 @@ function setIcon()
   end
 end
 
-function lockScreen()
+function caffeineLockScreen()
   hs.caffeinate.lockScreen()
 end
 
 function mod.init(context)
   mod.context = context
   mod.menubar = hs.menubar.new()
-
   if mod.menubar then
-    mod.menubar:setClickCallback(menuOnClick)
-    setIcon()
+    mod.menubar:setClickCallback(caffeineMenuIconOnClick)
+    caffeineSetIcon()
   end
 end
 
@@ -39,5 +35,4 @@ function mod.unload()
   hs.caffeinate.set("displayIdle", false, true)
   mod.menubar:delete()
 end
-
 return mod

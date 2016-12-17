@@ -1,7 +1,6 @@
 local mod = {}
 
 mod.name = "Snap"
-mod.context = {}
 
 function snapFullscreen()
   if hs.window.focusedWindow() then

@@ -6,7 +6,6 @@
   config, resource and other extensions are located at.
 ]]
 
-
 local env = {}
 
 env.base = os.getenv("HOME") .. "/.hammerspoon/"
