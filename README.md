@@ -1,8 +1,9 @@
 # Hammerspoon Framework!
 
-## A framework for [Hammerspoon](http://www.hammerspoon.org)
+## An awesome framework for [Hammerspoon](http://www.hammerspoon.org)
 
-This is an early version with a very basic feature set.
+This is an early version with a very basic feature set, nevertheless it's in daily usage by myself.
+At this time I ain't encountering any stability issues, so feel free to test on your own.
 
 ### Instructions
 
