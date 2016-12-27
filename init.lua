@@ -3,14 +3,13 @@
   Preferences can be made in the corresponding files: "etc"-directory.
 ]]
 
------------------------------
----  Initializing Kernel  ---
------------------------------
-kernel = require("kernel")
-kernel.init()
+------------------------------
+---   Initializing core    ---
+------------------------------
+core = require("core")
 
------------------------------
----     Bootstrapping     ---
------------------------------
-extensions = require("etc/extensions")
-kernel.bootstrap(extensions)
+-------------------------------
+--- Boostrapping extensions ---
+-------------------------------
+local extensions = prequire("etc/extensions")
+core.bootstrap(extensions)

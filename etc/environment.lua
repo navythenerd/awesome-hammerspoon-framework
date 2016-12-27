@@ -1,8 +1,8 @@
 --[[
   !!!Do not move or delete this file!!!
 
-  The kernel loads this file to load enviroment variable which is injected into
-  extension during bootstrap process. Due to this extensions know where
+  The core loads this file to load enviroment variable which is injected into
+  extension during bootstrap process. Due to this, extensions know where
   config, resource and other extensions are located at.
 ]]
 
