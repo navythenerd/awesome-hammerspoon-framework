@@ -1,4 +1,5 @@
 local mod = {}
+
 mod.name = "Caffeine"
 
 function caffeineMenuIconOnClick()
@@ -35,4 +36,5 @@ function mod.unload()
   hs.caffeinate.set("displayIdle", false, true)
   mod.menubar:delete()
 end
+
 return mod

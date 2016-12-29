@@ -148,7 +148,7 @@ function core.unloadAll()
   for i, extension in ipairs(core.extensions) do
     core.log.i("Unload extension " .. extension.name)
 
-    if extension.unload ~= nil and type(extension.unload == 'function') then
+    if extension.unload ~= nil and type(extension.unload) == 'function' then
       extension.unload()
     end
 
@@ -168,8 +168,36 @@ function core.unloadAll()
   end
 end
 
+function core.unloadExtension(name)
+  if name ~= nil and type(name) == 'string' then
+    for i, extension in ipairs(core.extensions) do
+      if extension.name == name then
+        core.log.i("Unload extension " .. extension.name)
+
+        if extension.unload ~= nil and type(extension.unload) == 'function' then
+          extension.unload()
+        end
+
+        if extension.context.config.keymap ~= nil then
+          for n, keymap in ipairs(extension.context.config.keymap) do
+            if keymap.key ~= nil then
+              if keymap.alt then
+                core.unbindHotkey(keymap.key, true)
+              else
+                core.unbindHotkey(keymap.key, false)
+              end
+            end
+          end
+        end
+
+        table.remove(core.extensions, i)
+      end
+    end
+  end
+end
+
 --[[
-  Start Initialization & Auto-Bootstrapping
+  Start automatic initialization at loading
 ]]
 core.log = hs.logger.new('Core', 'info')
 
@@ -182,7 +210,7 @@ for i = 48,  57 do table.insert(charset, string.char(i)) end
 for i = 65,  90 do table.insert(charset, string.char(i)) end
 for i = 97, 122 do table.insert(charset, string.char(i)) end
 --[[
-  End Initialization & Auto-Bootstrapping
+  End initialization
 ]]
 
 return core

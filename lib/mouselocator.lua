@@ -1,7 +1,6 @@
-local mod={}
+local mod = {}
 
 mod.name = "Mouselocator"
-mod.context = {}
 
 local mouseCircle = nil
 local mouseCircleTimer = nil
