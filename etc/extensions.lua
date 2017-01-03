@@ -7,8 +7,7 @@
 local extensions = {
   "snap",
   "mouselocator",
-  "caffeine",
-  "redshift"
+  "caffeine"
 }
 
 return extensions

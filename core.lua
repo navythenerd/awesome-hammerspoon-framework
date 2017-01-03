@@ -6,8 +6,6 @@
 local core = {}
 
 core.config = {}
-core.config.env  = {}
-core.config.keymap = {}
 core.helpers = {}
 core.shell = {}
 core.shell.stdOut = {}
@@ -17,7 +15,7 @@ core.extensions = {}
 
 local charset = {}
 
-function reloadConfig(files)
+local function reloadConfig(files)
   doReload = false
   for _,file in pairs(files) do
     if file:sub(-4) == ".lua" then
@@ -131,7 +129,7 @@ function core.bootstrap(extensions)
     for i, extension in ipairs(extensions) do
       mod = prequire(core.config.env.extensions .. extension)
 
-      if (mod ~= nil and mod ~= true) then
+      if (mod ~= nil) then
         core.log.i("Bootstrapping extension " .. mod.name)
 
         bootstrapExtension(mod)
@@ -168,10 +166,10 @@ function core.unloadAll()
   end
 end
 
-function core.unloadExtension(name)
-  if name ~= nil and type(name) == 'string' then
+function core.unload(identifier)
+  if identifier ~= nil and type(identifier) == 'string' then
     for i, extension in ipairs(core.extensions) do
-      if extension.name == name then
+      if extension.name == identifier or extension.context.id == identifier then
         core.log.i("Unload extension " .. extension.name)
 
         if extension.unload ~= nil and type(extension.unload) == 'function' then

@@ -19,16 +19,36 @@ function caffeineSetIcon()
   end
 end
 
+function caffeineScreenWatcherListener()
+  local monitorCount = #hs.screen.allScreens()
+
+  if (monitorCount > 1) then
+    hs.caffeinate.set("displayIdle", true, true)
+  else
+    hs.caffeinate.set("displayIdle", false, true)
+  end
+
+  caffeineSetIcon()
+end
+
 function caffeineLockScreen()
   hs.caffeinate.lockScreen()
 end
 
 function mod.init(context)
   mod.context = context
+
   mod.menubar = hs.menubar.new()
   if mod.menubar then
     mod.menubar:setClickCallback(caffeineMenuIconOnClick)
     caffeineSetIcon()
+  end
+
+  if mod.context.config.enableMonitorMode then
+    mod.screenWatcher = hs.screen.watcher.new(caffeineScreenWatcherListener)
+    if mod.screenWatcher then
+      mod.screenWatcher:start()
+    end
   end
 end
 

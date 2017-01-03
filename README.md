@@ -1,5 +1,7 @@
 # Hammerspoon Framework!
 
+## Version: 1-01.2017 [State: Stable]
+
 ## An awesome framework for [Hammerspoon](http://www.hammerspoon.org)
 
 This is an early version with a very basic feature set, nevertheless it's in daily usage by myself.
@@ -11,7 +13,7 @@ At this time I ain't encountering any stability issues, so feel free to test on 
    ```
    git clone https://gitlab.com/ckaufmann/hammerspoon-framework.git ~/.hammerspoon
    ```
-2. Edit `etc/extensions.lua` to enable/disable the extensions you want (by default all supplied extensions, are enabled).
+2. Edit `etc/extensions.lua` to enable/disable the extensions you want (by default all supplied extensions except `Redshift` are enabled).
 3. Edit the corresponding config files for the extensions in `etc` directory (Read below to learn more about configuration).
 
 ### Extensions included
@@ -23,8 +25,9 @@ By default the following extensions are supplied (Inspiration by [Hammerspoon's 
   - Redshift config is located at `etc/redshift.lua`.
 - Caffeine - Disable standby time for your screen (Inspired by [Caffeine](https://de.wikipedia.org/wiki/Caffeine)).
   - Caffeine can be toggled through menubar icon (Cup) or through hotkey `[CMD][ALT][CTRL][S]`.
-  - Furthermore through `[CMD][ALT][CTRL][L]` you can lock your screen immediately
-  - Config located at `etc/caffeine.lua`
+  - Furthermore through `[CMD][ALT][CTRL][L]` you can lock your screen immediately.
+  - MonitorMode automatically disbales/enables the display idle at connection/disconnection of an external monitor (Can be disabled through config)
+  - Config is located at `etc/caffeine.lua`.
 - MouseLocator - Hightlights your cursor with a circle (Inspired by [Locator](https://github.com/zzamboni/oh-my-hammerspoon/blob/master/plugins/mouse/locator.lua)).
   - Hightlight is triggered by `[CMD][ALT][CTRL][M]`.
   - Config is located at `etc/mouselocator.lua`.
@@ -37,65 +40,66 @@ By default the following extensions are supplied (Inspiration by [Hammerspoon's 
     - quarter-screen-right-top: `[CMD][ALT][CTRL][R]`
     - quarter-screen-left-bottom: `[CMD][ALT][CTRL][C]`
     - quarter-screen-right-bottom: `[CMD][ALT][CTRL][V]`
-  - Config can be found at `etc/snap.lua`.
+  - Config is located at `etc/snap.lua`.
 
 ## General stucture
 
 The framework provides some default files which are needed to get the framework working. These main files are `init.lua`, `core.lua`, `etc/environment.lua`, `etc/extensions.lua` and `etc/keymap.lua`.
 
-### Init.lua
+### init.lua
 
-This file is the main entry point for the hammerspoon configuration. This file I use to load the `Core` and boostrap all the needed extensions. So it is not necessary to change this file.
+This file is the main entry point for the hammerspoon configuration. This file is used to load the `Core` and boostrap all the specified extensions. So it is not necessary to change this file.
 
-### Core.lua
+### core.lua
 
-This is the main framework file which is managing and bootstrapping any further extensions. The kernel comes with some other pre-configured helper functions and hot-reloading if some file changes are recognized.
+This is the main framework file which is managing and bootstrapping any further extensions. The `Core` comes with some other pre-configured helper functions.
 
 #### Core Features
 
 - Hot-reloading of configuration: This function is triggered every time a file has changed. This causes a reload of the hammerspoon configuration.
-- Core uses its own require function called through: `prequire(...)`, this function will return the loaded file if its exist otherwise the return value is `nil`.
-- Hotkey-binding: This function can bind any function to the provided key and global hotkey. There is no need to use this function if you use native-extensions, otherwise you can use `core.bindHotkey(key, alt, fn)` (key - string, alt - boolean, fn - function) to manually bootstrap third-party-extensions.
-- Shell: Core provides basic command execution through default shell defined in environment table.
+- Own require function which can be called through: `prequire(...)`, this function will return the loaded file if its exist otherwise the return value is `nil`.
+- Hotkey-binding: This function can bind any function to the provided key and global hotkey. There is no need to use this function if you use extensions which are developed for this framework, otherwise you can use `core.bindHotkey(key, alt, fn)` (key - string, alt - boolean, fn - function) to manually bootstrap third-party extensions.
+- Shell: Basic command execution through default shell defined in environment table.
   - Command-Execution: `core.execute(input)`
   - STD/IO (Table): `core.shell.stdOut`, `core.shell.stdErr`, `core.shell.exitCode`
-- Helper-functions: This functions should provide some easy-to-use features not natively supplied by lua
+- Helper-functions:
   - `core.helpers.randomString(length)`: Generates a random string of the given length.
   - `core.helpers.getSunrise()`: Get sunrise information based on your location.
 
-### Extensions.lua
+### extensions.lua
 
-This file is used to load extensions. There is provided one table `extensions` add your extensions as string to the table and the kernel will bootstrap them from `lib` directory.
+This file is used to load extensions. There is provided the table `extensions`, add your extensions as string to the table and the `Core` will bootstrap them from `lib` directory using the corresponding configuration file from `etc` directory.
 
-### Environment.lua
+### environment.lua
 
-This file is used for environment configuration, feel free to change the environment entries even it is not recommended.
+This file is used for environment configuration, feel free to change the environment entries even it is not recommended. You can also add further enviroment vars which you want to use across different extensions.
 
-### Keymap.lua
+### keymap.lua
 
-The keymap provided by this file is used by the `Core` as global hotkey-configuration
+The keymap provided by this file is used by the `Core` as global hotkey-configuration.
 
 ## Extensions Development
 
 1. Create your own extension file `lib/myfirstextension.lua`.
-2. Create your configuration file.
+2. Create your configuration file `etc/myfirstextension.lua`.
 2. Add the base information needed to provide a native extension:
   ```
     local mod = {}
 
-    mod.name = "MyFirstExtension" // Is used as lowercase string for `res` context and configuration
+    mod.name = "MyFirstExtension" -- Is used as lowercase string for `res` context and configuration
 
-    function mod.init(context)
-      -- Called by kernel to bootstrap extension
-
-      -- Save the provided context information injected from kernel, this includes config file through mod.context.config and keymap through mod.context.keymap
-      -- Keymap will automatically be loaded and bound by the kernel
+    function mod.init(context) -- Context var is optional
+      -- Called automatically by core to bootstrap extension
+      -- Save the provided context information injected from core, this includes your config table through mod.context.config, extension id assigned by core
+      -- through mod.context.id
       mod.context = context
+
+      -- Keymap will automatically be loaded and bound by the core
     end
 
     function mod.unload()
-      -- Unload all you have created e.g. timers, menubars, ...
-      -- Don't unload keymap manually, this will be automatically done by kernel
+      -- Unload all created timers, menubars, ...
+      -- Don't unload keymap manually, this will be automatically done by core
     end
 
     return mod
@@ -111,6 +115,13 @@ The keymap provided by this file is used by the `Core` as global hotkey-configur
       {key = "b", alt = true, callback = bar}
     }
 
+    -- You can add other settings to the settings table, which then can be used by your extension
+    setting.language = {
+      "en", "de"
+    }
+
+    setting.someProperty = 3
+
     return settings
   ```
 3. Add your new created extension to the `extensions` table in `etc/extensions.lua` to load it.
@@ -124,3 +135,4 @@ The keymap provided by this file is used by the `Core` as global hotkey-configur
     }
     ...
   ```
+4. `Core` will automatically reload configuration and your extension is going to be loaded.
