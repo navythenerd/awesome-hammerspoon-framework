@@ -1,7 +1,5 @@
 # Hammerspoon Framework!
 
-## Version: 1-01.2017 [State: Stable]
-
 ## An awesome framework for [Hammerspoon](http://www.hammerspoon.org)
 
 This is an early version with a very basic feature set, nevertheless it's in daily usage by myself.
