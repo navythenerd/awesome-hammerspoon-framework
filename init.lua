@@ -12,4 +12,5 @@ core = require("core")
 --- Boostrapping extensions ---
 -------------------------------
 local extensions = prequire("etc/extensions")
+
 core.bootstrap(extensions)

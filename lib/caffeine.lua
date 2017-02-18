@@ -2,12 +2,34 @@ local mod = {}
 
 mod.name = "Caffeine"
 
+local caffeineState = false
+
+function caffeineSleepNow()
+  hs.caffeinate.systemSleep()
+end
+
+function caffeineSleepNowAndLock()
+  hs.caffeinate.lockScreen()
+  hs.timer.doAfter(4, caffeineSleepNow)
+end
+
 function caffeineMenuIconOnClick()
+  local monitorCount = #hs.screen.allScreens()
+
   if hs.caffeinate.get("displayIdle") then
     hs.caffeinate.set("displayIdle", false, true)
+
+    if (monitorCount == 1) then
+      caffeineState = false
+    end
   else
     hs.caffeinate.set("displayIdle", true, true)
+
+    if (monitorCount == 1) then
+      caffeineState = true
+    end
   end
+
   caffeineSetIcon()
 end
 
@@ -25,7 +47,11 @@ function caffeineScreenWatcherListener()
   if (monitorCount > 1) then
     hs.caffeinate.set("displayIdle", true, true)
   else
-    hs.caffeinate.set("displayIdle", false, true)
+    if (caffeineState) then
+      hs.caffeinate.set("displayIdle", true, true)
+    else
+      hs.caffeinate.set("displayIdle", false, true)
+    end
   end
 
   caffeineSetIcon()
@@ -44,7 +70,7 @@ function mod.init(context)
     caffeineSetIcon()
   end
 
-  if mod.context.config.enableMonitorMode then
+  if mod.context.config.monitorMode then
     mod.screenWatcher = hs.screen.watcher.new(caffeineScreenWatcherListener)
     if mod.screenWatcher then
       mod.screenWatcher:start()

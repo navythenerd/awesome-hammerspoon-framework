@@ -1,12 +1,12 @@
 --[[
   !!!Do not move or delete this file!!!
 
-  The core loads this file to know which extensions should be loaded.
+  This file is used to load further extensions
 ]]
 
 local extensions = {
-  "snap",
   "mouselocator",
+  "snap",
   "caffeine"
 }
 
