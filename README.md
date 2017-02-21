@@ -2,6 +2,8 @@
 
 ## A framework for [Hammerspoon](http://www.hammerspoon.org)
 
+!!!Old framework extensions not fully compatible with this rewritten version!!!
+
 This is a framework for your hammerspoon configuration. The aims of this framework are to unitize the structure of hammerspoon functionalities (called `modules` in this framework). So everyone can include modules from other developers with ease.
 The framework does the rest for you, e.g. loading dependencies, binding the hotkeys etc..
 
