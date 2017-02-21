@@ -11,7 +11,7 @@ settings.linewidth = 4
 settings.diameter = 80
 
 settings.keymap = {
-  {key = "m", callback = mouseHighlight}
+  {key = "m", fn = core.mod.mouselocator.mouseHighlight}
 }
 
 return settings

@@ -6,11 +6,15 @@
 ------------------------------
 ---   Initializing core    ---
 ------------------------------
-core = require("core")
+core = require('core')
+core.init('etc/environment', 'etc/keymap')
 
--------------------------------
---- Boostrapping extensions ---
--------------------------------
-local extensions = prequire("etc/extensions")
+------------------------------
+---   Register libraries   ---
+------------------------------
+core.registerLibraries('etc/libraries')
 
-core.bootstrap(extensions)
+------------------------------
+---  Bootstrapping modules ---
+------------------------------
+core.bootstrap('etc/modules')

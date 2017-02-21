@@ -1,11 +1,11 @@
 local mod = {}
 
-mod.name = "Mouselocator"
+mod.mountpoint = 'mouselocator'
 
 local mouseCircle = nil
 local mouseCircleTimer = nil
 
-function mouseHighlight()
+function mod.mouseHighlight()
   -- Delete an existing highlight if it exists
   if mouseCircle then
     mouseCircle:delete()
@@ -14,7 +14,7 @@ function mouseHighlight()
     end
   end
   -- Get the current co-ordinates of the mouse pointer
-  mousepoint = hs.mouse.getAbsolutePosition ()
+  local mousepoint = hs.mouse.getAbsolutePosition ()
   -- Prepare a big red circle around the mouse pointer
   local diameter = mod.context.config.diameter
   local radius = math.floor(diameter / 2)
@@ -26,10 +26,6 @@ function mouseHighlight()
 
   -- Set a timer to delete the circle after 3 seconds
   mouseCircleTimer = hs.timer.doAfter(2, function() mouseCircle:delete() end)
-end
-
-function mod.init(context)
-  mod.context = context
 end
 
 return mod

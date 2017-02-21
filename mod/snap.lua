@@ -1,8 +1,8 @@
 local mod = {}
 
-mod.name = "Snap"
+mod.mountpoint = 'snap'
 
-function snapFullscreen()
+function mod.fullscreen()
   if hs.window.focusedWindow() then
     local win = hs.window.focusedWindow()
     local f = win:frame()
@@ -19,7 +19,7 @@ function snapFullscreen()
   end
 end
 
-function snapLeftHalf()
+function mod.leftHalf()
   if hs.window.focusedWindow() then
     local win = hs.window.focusedWindow()
     local f = win:frame()
@@ -36,7 +36,7 @@ function snapLeftHalf()
   end
 end
 
-function snapRightHalf()
+function mod.rightHalf()
   if hs.window.focusedWindow() then
     local win = hs.window.focusedWindow()
     local f = win:frame()
@@ -53,7 +53,7 @@ function snapRightHalf()
   end
 end
 
-function snapLeftTopQuarter()
+function mod.leftTopQuarter()
   if hs.window.focusedWindow() then
     local win = hs.window.focusedWindow()
     local f = win:frame()
@@ -70,7 +70,7 @@ function snapLeftTopQuarter()
   end
 end
 
-function snapRightTopQuarter()
+function mod.rightTopQuarter()
   if hs.window.focusedWindow() then
     local win = hs.window.focusedWindow()
     local f = win:frame()
@@ -87,7 +87,7 @@ function snapRightTopQuarter()
   end
 end
 
-function snapLeftBottomQuarter()
+function mod.leftBottomQuarter()
   if hs.window.focusedWindow() then
     local win = hs.window.focusedWindow()
     local f = win:frame()
@@ -104,7 +104,7 @@ function snapLeftBottomQuarter()
   end
 end
 
-function snapRightBottomQuarter()
+function mod.rightBottomQuarter()
   if hs.window.focusedWindow() then
     local win = hs.window.focusedWindow()
     local f = win:frame()
@@ -119,10 +119,6 @@ function snapRightBottomQuarter()
   else
     hs.alert.show("No active window")
   end
-end
-
-function mod.init(context)
-  mod.context = context
 end
 
 return mod

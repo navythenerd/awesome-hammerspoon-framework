@@ -5,7 +5,7 @@ settings.colorTemp = 3700
 settings.dayColorTemp = 5500
 
 settings.keymap = {
-  { key = "-", callback = toggleRedshift },
+  { key = "-", fn = core.mod.redshift.toggleRedshift },
 }
 
 return settings

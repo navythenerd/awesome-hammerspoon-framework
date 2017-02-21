@@ -1,6 +1,8 @@
 local mod = {}
 
-mod.name = "Redshift"
+mod.mountpoint = 'redshift'
+mod.dependencies = {'location'}
+mod.enabled = false
 
 local function startRedshift()
   if mod.context.config.dayColorTemp ~= nil then
@@ -19,13 +21,13 @@ local function stopRedshift()
 end
 
 local function resetRedshift()
-  mod.sunrise = core.helpers.getSunrise()
+  mod.sunrise = core.lib.location.getSunrise()
   hs.redshift.stop()
   hs.timer.doAfter(20, startRedshift)
   hs.timer.doAfter(30, function () mod.cronjob = hs.timer.doAt(hs.timer.seconds(mod.sunrise.sunrise) + hs.timer.hours(2), resetRedshift) end)
 end
 
-function toggleRedshift()
+function mod.toggleRedshift()
   if mod.enabled == true then
     hs.alert.show(mod.name .. " disabled")
     mod.enabled = false
@@ -38,7 +40,6 @@ function toggleRedshift()
 end
 
 function mod.init(context)
-  mod.context = context
   resetRedshift()
 end
 

@@ -9,9 +9,9 @@
 local env = {}
 
 env.base = os.getenv("HOME") .. "/.hammerspoon/"
-env.extensions = "lib/"
+env.libraries = "lib/"
 env.config = "etc/"
+env.modules = "mod/"
 env.resources = "res/"
-env.shell = "/bin/bash"
 
 return env

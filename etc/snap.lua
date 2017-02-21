@@ -1,13 +1,13 @@
 local settings = {}
 
 settings.keymap = {
-  {key = "f", callback = snapFullscreen},
-  {key = "d", callback = snapLeftHalf},
-  {key = "g", callback = snapRightHalf},
-  {key = "e", callback = snapLeftTopQuarter},
-  {key = "r", callback = snapRightTopQuarter},
-  {key = "c", callback = snapLeftBottomQuarter},
-  {key = "v", callback = snapRightBottomQuarter}
+  {key = "f", fn = core.mod.snap.fullscreen},
+  {key = "d", fn = core.mod.snap.leftHalf},
+  {key = "g", fn = core.mod.snap.rightHalf},
+  {key = "e", fn = core.mod.snap.leftTopQuarter},
+  {key = "r", fn = core.mod.snap.rightTopQuarter},
+  {key = "c", fn = core.mod.snap.leftBottomQuarter},
+  {key = "v", fn = core.mod.snap.rightBottomQuarter}
 }
 
 return settings
