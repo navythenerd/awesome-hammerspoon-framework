@@ -160,7 +160,7 @@ The keymap provided by this file is used as global hotkey-configuration.
       hs.alert.show('foo triggered')
     end
 
-    return mod
+    return lib
   ```
 4. Add a library to your definition file `etc/library.lua`.
   ```
