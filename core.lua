@@ -125,17 +125,19 @@ local function bootstrapModule(file)
         core.mod[mod.mountpoint].init()
       end
 
-      if (core.mod[mod.mountpoint].context.config.keymap ~= nil and type(core.mod[mod.mountpoint].context.config.keymap) == 'table') then
-        log.i("Keymap for "  .. file .. " found")
-        for n, keymap in ipairs(core.mod[mod.mountpoint].context.config.keymap) do
-          if (keymap.key ~= nil and keymap.fn ~= nil and type(keymap.key) == 'string' and type(keymap.fn) == 'function') then
-            if (keymap.alt) then
-              core.bindHotkey(keymap.key, true, keymap.fn)
+      if (core.mod[mod.mountpoint].context.config ~= nil and type(core.mod[mod.mountpoint].context.config) == 'table') then
+        if (core.mod[mod.mountpoint].context.config.keymap ~= nil and type(core.mod[mod.mountpoint].context.config.keymap) == 'table') then
+          log.i("Keymap for "  .. file .. " found")
+          for n, keymap in ipairs(core.mod[mod.mountpoint].context.config.keymap) do
+            if (keymap.key ~= nil and keymap.fn ~= nil and type(keymap.key) == 'string' and type(keymap.fn) == 'function') then
+              if (keymap.alt) then
+                core.bindHotkey(keymap.key, true, keymap.fn)
+              else
+                core.bindHotkey(keymap.key, false, keymap.fn)
+              end
             else
-              core.bindHotkey(keymap.key, false, keymap.fn)
+              log.e("Error in keymap of " .. file)
             end
-          else
-            log.e("Error in keymap of " .. file)
           end
         end
       end

@@ -11,7 +11,7 @@ for i = 97, 122 do table.insert(charset, string.char(i)) end
 
 function lib.getRandomString(length)
   if (type(length) == 'number' and length > 0) then
-    return lib.randomString(length - 1) .. charset[math.random(1, #charset)]
+    return lib.getRandomString(length - 1) .. charset[math.random(1, #charset)]
   else
     return ""
   end
