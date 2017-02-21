@@ -113,7 +113,7 @@ The keymap provided by this file is used as global hotkey-configuration.
 
     return mod
   ```
-4. Add a keymap to your configuration file `etc/myfirstextension.lua`.
+4. Add a keymap to your configuration file `etc/myfirstmod.lua`.
   ```
     local settings = {}
 
