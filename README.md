@@ -86,7 +86,7 @@ The keymap provided by this file is used as global hotkey-configuration.
   ```
     local mod = {}
 
-    mod.mountpoint = "myfirstmod" -- Is used for mounting your mod into core.mod, so every module is accessibly through core.mod.<namespace>
+    mod.namespace = "myfirstmod" -- Is used for mounting your mod into core.mod, so every module is accessibly through core.mod.<namespace>
     mod.dependencies = {'stdlib', <foo>, <bar>, ...} -- Dependency list, these dependencies are mounted by the core, only necessary if your extension needs some libs (E.g. stdlib is used for getRandomString() function)
 
     function mod.foo()
@@ -99,7 +99,7 @@ The keymap provided by this file is used as global hotkey-configuration.
 
     function mod.init()
       -- Called automatically by core to bootstrap extension
-
+      -- Config accessible through mod.context.config
 
       -- Keymap will automatically be loaded and bound by the core, further you have access to your config through mod.context.config
       -- Resource path for your application is provided through mod.context.resources
@@ -149,7 +149,7 @@ The keymap provided by this file is used as global hotkey-configuration.
 
 ## Library Development
 
-1. Create your own lib file `lib/myfirstliblua`.
+1. Create your own lib file `lib/myfirstlib.lua`.
 2. Add the base information needed to provide a working library:
   ```
     local lib = {}
