@@ -1,6 +1,6 @@
 local lib = {}
 
-lib.namespace = 'location'
+lib.namespace = "location"
 
 function lib.getSunrise()
   hs.location.start()

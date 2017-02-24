@@ -1,6 +1,6 @@
 local lib = {}
 
-lib.namespace = 'random'
+lib.namespace = "random"
 
 math.randomseed(os.time())
 

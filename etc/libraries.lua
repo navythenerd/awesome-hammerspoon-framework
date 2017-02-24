@@ -1,8 +1,9 @@
-local lib = {}
+local lib
 
 lib = {
-  { "stdlib", {"random"} },
-  { "location", "location" },
+  { "stdlib", {"system", "random"} },
+  { "stddev", {"audio"} },
+  { "stdloc", "location" },
 }
 
 return lib

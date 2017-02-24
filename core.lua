@@ -108,27 +108,27 @@ local function bootstrapModule(file)
   if (mod ~= nil and type(mod) == 'table') then
     log.i("Boostrapping " .. file)
 
-    if (core.mod[mod.mountpoint] == nil) then
-      core.mod[mod.mountpoint] = mod
-      core.mod[mod.mountpoint].context = {}
-      core.mod[mod.mountpoint].context.config = prequire(environment.config .. file)
-      core.mod[mod.mountpoint].context.resources = environment.resources .. file .. '/'
+    if (core.mod[mod.namespace] == nil) then
+      core.mod[mod.namespace] = mod
+      core.mod[mod.namespace].context = {}
+      core.mod[mod.namespace].context.config = prequire(environment.config .. file)
+      core.mod[mod.namespace].context.resources = environment.resources .. file .. '/'
 
-      if (core.mod[mod.mountpoint].dependencies ~= nil and type(core.mod[mod.mountpoint].dependencies) == 'table') then
-        for n, lib in ipairs(core.mod[mod.mountpoint].dependencies) do
+      if (core.mod[mod.namespace].dependencies ~= nil and type(core.mod[mod.namespace].dependencies) == 'table') then
+        for n, lib in ipairs(core.mod[mod.namespace].dependencies) do
           core.mountLibrary(lib)
         end
       end
 
-      if (core.mod[mod.mountpoint].init ~= nil and type(core.mod[mod.mountpoint].init) == 'function') then
+      if (core.mod[mod.namespace].init ~= nil and type(core.mod[mod.namespace].init) == 'function') then
         log.i("Initializing " .. file)
-        core.mod[mod.mountpoint].init()
+        core.mod[mod.namespace].init()
       end
 
-      if (core.mod[mod.mountpoint].context.config ~= nil and type(core.mod[mod.mountpoint].context.config) == 'table') then
-        if (core.mod[mod.mountpoint].context.config.keymap ~= nil and type(core.mod[mod.mountpoint].context.config.keymap) == 'table') then
+      if (core.mod[mod.namespace].context.config ~= nil and type(core.mod[mod.namespace].context.config) == 'table') then
+        if (core.mod[mod.namespace].context.config.keymap ~= nil and type(core.mod[mod.namespace].context.config.keymap) == 'table') then
           log.i("Keymap for "  .. file .. " found")
-          for n, keymap in ipairs(core.mod[mod.mountpoint].context.config.keymap) do
+          for n, keymap in ipairs(core.mod[mod.namespace].context.config.keymap) do
             if (keymap.key ~= nil and keymap.fn ~= nil and type(keymap.key) == 'string' and type(keymap.fn) == 'function') then
               if (keymap.alt) then
                 core.bindHotkey(keymap.key, true, keymap.fn)
@@ -142,7 +142,7 @@ local function bootstrapModule(file)
         end
       end
     else
-      log.i("Module " .. file .. " already mounted or mountpoint used by another module")
+      log.i("Module " .. file .. " already mounted or namespace used by another module")
     end
   else
     log.e("Error while trying to bootstrap " .. file)

@@ -1,6 +1,6 @@
 local mod = {}
 
-mod.mountpoint = "caffeine"
+mod.namespace = "caffeine"
 
 local caffeineState = false
 

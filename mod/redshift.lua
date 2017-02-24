@@ -1,6 +1,6 @@
 local mod = {}
 
-mod.mountpoint = 'redshift'
+mod.namespace = 'redshift'
 mod.dependencies = {'location'}
 mod.enabled = false
 

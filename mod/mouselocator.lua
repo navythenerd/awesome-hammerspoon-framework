@@ -1,6 +1,6 @@
 local mod = {}
 
-mod.mountpoint = 'mouselocator'
+mod.namespace = 'mouselocator'
 
 local mouseCircle = nil
 local mouseCircleTimer = nil

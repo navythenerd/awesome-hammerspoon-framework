@@ -1,6 +1,6 @@
 local mod = {}
 
-mod.mountpoint = 'snap'
+mod.namespace = 'snap'
 
 function mod.fullscreen()
   if hs.window.focusedWindow() then
