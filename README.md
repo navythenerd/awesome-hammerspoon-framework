@@ -169,5 +169,4 @@ The keymap provided by this file is used as global hotkey-configuration.
     }
 
     return lib
-
   ```
