@@ -3,8 +3,8 @@ local modules
 modules = {
   "caffeine",
   "snap",
-  "mouselocator",
-  "redshift"
+  "redshift",
+  "mouselocator"
 }
 
 return modules

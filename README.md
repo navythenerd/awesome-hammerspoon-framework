@@ -74,6 +74,10 @@ This file is used for environment configuration, feel free to change the environ
 
 The keymap provided by this file is used as global hotkey-configuration.
 
+### Oh-My-Hammerspoon Support
+
+Now rudimentary OMH-Support added through shipped library `omh`. After mounting the omh library through `core.mountLibrary('omh')` you can use `core.lib.omh.go()` and `core.lib.omh.config()`. As the OMH-Support is provided as a library, you can define this as dependency in your modules as usual.
+
 ## Module Development
 
 1. Create your own module file `mod/myfirstmod.lua`.

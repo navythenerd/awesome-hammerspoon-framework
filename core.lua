@@ -1,7 +1,8 @@
 local core = {}
 
+logger = hs.logger.new('Core')
+
 local init = false
-local log = hs.logger.new('Core', 'info')
 local environment
 local keymap
 local libDb = {}
@@ -17,7 +18,7 @@ local function reloadConfig(files)
     end
   end
   if doReload then
-    log.i("Some files have been changed, reloading them.")
+    logger.i("Some files have been changed, reloading them.")
     hs.reload()
   end
 end
@@ -47,18 +48,18 @@ end
 function core.registerLibraries(lib)
   if (type(lib) == 'table') then
     libDb = lib
-    log.i("Libraries have been registered")
+    logger.i("Libraries have been registered")
   elseif (type(lib) == 'string') then
     local libDef = prequire(lib)
 
     if (libDef ~= nil and type(libDef) == 'table') then
       libDb = libDef
-      log.i("Libraries have been registered")
+      logger.i("Libraries have been registered")
     else
-      log.e("Cannot register libraries from given file")
+      logger.e("Cannot register libraries from given file")
     end
   else
-    log.e("Cannot register libraries from given datatype")
+    logger.e("Cannot register libraries from given datatype")
   end
 end
 
@@ -67,7 +68,7 @@ function core.mountLibrary(libName)
     for i, lib in ipairs(libDb) do
       if lib[1] == libName then
         if (core.lib[libName] == nil) then
-          log.i("Mounting library " .. libName)
+          logger.i("Mounting library " .. libName)
           core.lib[libName] = {}
 
           if (type(lib[2]) == 'table') then
@@ -80,12 +81,12 @@ function core.mountLibrary(libName)
             core.lib[libName] = library
           end
         else
-          log.i("Library " .. libName .. " already mounted")
+          logger.i("Library " .. libName .. " already mounted")
         end
       end
     end
   else
-    log.e("Not initialised")
+    logger.e("Not initialised")
   end
 end
 
@@ -93,12 +94,12 @@ function core.umountLibrary(libName)
   if (init) then
     if (core.lib[libName] ~= nil) then
       core.lib[libName] = nil
-      log.i("Library " .. libName .. " unmounted")
+      logger.i("Library " .. libName .. " unmounted")
     else
-      log.e("No library with name " .. libName .. " found")
+      logger.e("No library with name " .. libName .. " found")
     end
   else
-    log.e("Not initialised")
+    logger.e("Not initialised")
   end
 end
 
@@ -106,7 +107,7 @@ local function bootstrapModule(file)
   local mod = prequire(environment.modules .. file)
 
   if (mod ~= nil and type(mod) == 'table') then
-    log.i("Boostrapping " .. file)
+    logger.i("Boostrapping " .. file)
 
     if (core.mod[mod.namespace] == nil) then
       core.mod[mod.namespace] = mod
@@ -121,13 +122,13 @@ local function bootstrapModule(file)
       end
 
       if (core.mod[mod.namespace].init ~= nil and type(core.mod[mod.namespace].init) == 'function') then
-        log.i("Initializing " .. file)
+        logger.i("Initializing " .. file)
         core.mod[mod.namespace].init()
       end
 
       if (core.mod[mod.namespace].context.config ~= nil and type(core.mod[mod.namespace].context.config) == 'table') then
         if (core.mod[mod.namespace].context.config.keymap ~= nil and type(core.mod[mod.namespace].context.config.keymap) == 'table') then
-          log.i("Keymap for "  .. file .. " found")
+          logger.i("Keymap for "  .. file .. " found")
           for n, keymap in ipairs(core.mod[mod.namespace].context.config.keymap) do
             if (keymap.key ~= nil and keymap.fn ~= nil and type(keymap.key) == 'string' and type(keymap.fn) == 'function') then
               if (keymap.alt) then
@@ -136,16 +137,16 @@ local function bootstrapModule(file)
                 core.bindHotkey(keymap.key, false, keymap.fn)
               end
             else
-              log.e("Error in keymap of " .. file)
+              logger.e("Error in keymap of " .. file)
             end
           end
         end
       end
     else
-      log.i("Module " .. file .. " already mounted or namespace used by another module")
+      logger.i("Module " .. file .. " already mounted or namespace used by another module")
     end
   else
-    log.e("Error while trying to bootstrap " .. file)
+    logger.e("Error while trying to bootstrap " .. file)
   end
 end
 
@@ -156,46 +157,46 @@ function core.bootstrap(modules)
     if (file ~= nil and type(file) == 'table') then
       core.bootstrap(file)
     else
-      log.e("Cannot bootstrap from given datatype")
+      logger.e("Cannot bootstrap from given datatype")
     end
   elseif (type(modules) == 'table') then
     for n, module in ipairs(modules) do
       bootstrapModule(module)
     end
   else
-    log.e("Cannot bootstrap from given datatype")
+    logger.e("Cannot bootstrap from given datatype")
   end
 end
 
 function core.setEnvironment(env)
   if (type(env) == 'table') then
     environment = env
-    log.i("Environemnt has been loaded")
+    logger.i("Environemnt has been loaded")
   elseif (type(env) == 'string') then
     environment = prequire(env)
     if (environment ~= nil and type(environment) == 'table') then
-      log.i("Environment has been loaded")
+      logger.i("Environment has been loaded")
     else
-      log.e("Failed loading environment from given file")
+      logger.e("Failed loading environment from given file")
     end
   else
-    log.e("Failed loading environment from given datatype")
+    logger.e("Failed loading environment from given datatype")
   end
 end
 
 function core.setKeymap(map)
   if (type(map) == 'table') then
     keymap = map
-    log.i("Keymap has been loaded")
+    logger.i("Keymap has been loaded")
   elseif (type(map) == 'string') then
     keymap = prequire(map)
     if (keymap ~= nil and type(keymap) == 'table') then
-      log.i("Keymap has been loaded")
+      logger.i("Keymap has been loaded")
     else
-      log.e("Failed loading keymap from given file")
+      logger.e("Failed loading keymap from given file")
     end
   else
-    log.e("Failed loading keymap from given datatype")
+    logger.e("Failed loading keymap from given datatype")
   end
 end
 
@@ -211,9 +212,9 @@ function core.init(env, map)
   if (environment ~= nil and type(environment) == 'table') then
     hs.pathwatcher.new(environment.base, reloadConfig):start()
     core.bindHotkey("1", false, hs.reload)
-    log.i("Pathwatcher has been started")
+    logger.i("Pathwatcher has been started")
     init = true
-    log.i("Successful initialised ")
+    logger.i("Successful initialised ")
   end
 end
 
