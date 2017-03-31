@@ -210,6 +210,7 @@ function core.init(env, map)
 
   if (environment ~= nil and type(environment) == 'table') then
     hs.pathwatcher.new(environment.base, reloadConfig):start()
+    core.bindHotkey("1", false, hs.reload)
     log.i("Pathwatcher has been started")
     init = true
     log.i("Successful initialised ")

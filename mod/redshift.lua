@@ -1,8 +1,9 @@
 local mod = {}
 
 mod.namespace = 'redshift'
-mod.dependencies = {'location'}
-mod.enabled = false
+mod.dependencies = {'stdloc'}
+
+local enabled = false
 
 local function startRedshift()
   if mod.context.config.dayColorTemp ~= nil then
@@ -11,40 +12,48 @@ local function startRedshift()
     hs.redshift.start(mod.context.config.colorTemp, mod.sunrise.sunset, mod.sunrise.sunrise, mod.context.config.transition, false)
   end
 
-  mod.enabled = true
+  enabled = true
 end
 
 local function stopRedshift()
   hs.redshift.stop()
-
-  mod.enabled = false
+  enabled = false
 end
 
-local function resetRedshift()
-  mod.sunrise = core.lib.location.getSunrise()
-  hs.redshift.stop()
-  hs.timer.doAfter(20, startRedshift)
-  hs.timer.doAfter(30, function () mod.cronjob = hs.timer.doAt(hs.timer.seconds(mod.sunrise.sunrise) + hs.timer.hours(2), resetRedshift) end)
+local function refreshSunrise()
+  mod.sunrise = core.lib.stdloc.getSunrise()
+end
+
+local function caffeinateHandler(event)
+  if (event == hs.caffeinate.watcher.systemWillSleep or event == hs.caffeinate.watcher.screensDidSleep or event == hs.caffeinate.watcher.systemWillSleep or event == hs.caffeinate.watcher.screensDidLock) then
+    stopRedshift()
+  elseif (event == hs.caffeinate.watcher.systemDidWake or event == hs.caffeinate.watcher.screensDidWake or event == hs.caffeinate.watcher.screensDidUnlock) then
+    refreshSunrise()
+    startRedshift()
+  end
 end
 
 function mod.toggleRedshift()
-  if mod.enabled == true then
-    hs.alert.show(mod.name .. " disabled")
-    mod.enabled = false
+  if enabled == true then
+    stopRedshift()
+    hs.alert.show("Redshift disabled")
   else
-    hs.alert.show(mod.name .. " enabled")
-    mod.enabled = true
+    startRedshift()
+    hs.alert.show("Redshift enabled")
   end
-
-  hs.redshift.toggle(mod.enabled)
 end
 
-function mod.init(context)
-  resetRedshift()
+function mod.init()
+  refreshSunrise()
+  hs.redshift.stop()
+  watcher = hs.caffeinate.watcher.new(caffeinateHandler)
+  watcher:start()
+  startRedshift()
 end
 
 function mod.unload()
-  hs.redshift.stop()
+  watcher:stop()
+  stopRedshift()
 end
 
 return mod

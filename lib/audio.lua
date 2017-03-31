@@ -8,7 +8,7 @@ local devs = {}
 
 lib.device = audio
 
-function lib.setAudioHandler(fn)
+function lib.setAudioEventHandler(fn)
   if (type(fn) == 'function') then
     for i,dev in ipairs(audio.allOutputDevices()) do
        if dev.watcherCallback ~= nil then

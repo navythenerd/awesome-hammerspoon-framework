@@ -2,12 +2,8 @@
 
 ## A framework for [Hammerspoon](http://www.hammerspoon.org)
 
-!!!Old framework extensions not fully compatible with this rewritten version!!!
-
-This is a framework for your hammerspoon configuration. The aims of this framework are to unitize the structure of hammerspoon functionalities (called `modules` in this framework). So everyone can include modules from other developers with ease.
+This is a framework for your Hammerspoon configuration. The aims of this framework are to unitize the structure of Hammerspoon functionalities (called `modules` in this framework), thus it is a seperate layer between the Hammerspoon API and the LUA-Scripting engine. So everyone can include modules from other developers with ease.
 The framework does the rest for you, e.g. loading dependencies, binding the hotkeys etc..
-
-The ease of use is reached through separation of functional code and configurational code. So configurational stuff is located in other files through tables. This makes it easy for even not programmers to configure modules and hotkeys to everybody's likes.
 
 ### Instructions
 
@@ -15,7 +11,7 @@ The ease of use is reached through separation of functional code and configurati
    ```
    git clone https://gitlab.com/ckaufmann/hammerspoon-framework.git ~/.hammerspoon
    ```
-2. Edit `etc/modules.lua` to enable/disable the modules you want (by default all supplied extensions except `Redshift` are enabled).
+2. Edit `etc/modules.lua` to enable/disable the modules you want (by default all supplied extensions except `HeadphoneWatcher` are enabled).
 3. Edit the corresponding config files for the extensions in `etc` directory (Read below to learn more about configuration).
 4. Edit `etc/keymap.lua` to change global hotkeys.
 
@@ -23,21 +19,21 @@ The ease of use is reached through separation of functional code and configurati
 
 By default the following modules are supplied (Inspiration by [Hammerspoon's sample configurations page](https://github.com/Hammerspoon/hammerspoon/wiki/Sample-Configurations)):
 
-- Redshift - Adjust screen brightness and gamma based on sunrise information (Inspired by [Redshift](https://github.com/jonls/redshift)).
+- Redshift - Adjust screen brightness and gamma based on sunrise information (Inspired by [Redshift](https://github.com/jonls/redshift) and [f.lux](https://justgetflux.com/)).
   - Temporally toggling off of Redshift is provided through `[CMD][ALT][CTRL][-]`
   - Redshift config is located at `etc/redshift.lua`.
-- Caffeine - Disable standby time for your screen (Inspired by [Caffeine](https://de.wikipedia.org/wiki/Caffeine)).
+- Caffeine - Disable standby time for your screen.
   - Caffeine can be toggled through menubar icon (Cup) or through hotkey `[CMD][ALT][CTRL][S]`.
   - Furthermore through `[CMD][ALT][CTRL][L]` you can lock your screen immediately.
   - Through `[SHIFT][CMD][ALT][CTRL][S]` Caffeine puts your Mac into sleep-idle immediately.
   - With `[SHIFT][CMD][ALT][CTRL][L]` Caffeine puts your Mac into sleep-idle after your screen was locked.
-  - MonitorMode automatically disbales/enables the display idle at connection/disconnection of an external monitor (Can be disabled through config)
+  - MonitorMode automatically disables/enables the display idle at connection/disconnection of an external monitor (Can be disabled through config)
   - Config is located at `etc/caffeine.lua`.
-- MouseLocator - Hightlights your cursor with a circle (Inspired by [Locator](https://github.com/zzamboni/oh-my-hammerspoon/blob/master/plugins/mouse/locator.lua)).
+- MouseLocator - Hightlights your cursor with a surrounding circle (Inspired by [Locator](https://github.com/zzamboni/oh-my-hammerspoon/blob/master/plugins/mouse/locator.lua)).
   - Hightlight is triggered by `[CMD][ALT][CTRL][M]`.
   - Config is located at `etc/mouselocator.lua`.
-- Snap - Provides simple window managment with full-screen, half-screen, quarter-screen.
-  - Manage focused through one of the following short-keys:
+- Snap - Provides simple window management with full-screen, half-screen, quarter-screen.
+  - Manage focused window through one of the following short-keys:
     - full-screen: `[CMD][ALT][CTRL][F]`
     - half-screen-left: `[CMD][ALT][CTRL][D]`
     - half-screen-right: `[CMD][ALT][CTRL][G]`
@@ -53,18 +49,18 @@ The framework provides some default files which are needed to get the framework 
 
 ### init.lua
 
-This file is the main entry point for the hammerspoon configuration. This file is used to load the `Core` and boostrap all the specified extensions. So it is not necessary to change this file.
+This file is the main entry point of every Hammerspoon configuration. This file is used to load the `Core` and bootstrap all the specified extensions. So it is not necessary to change this file.
 
 ### core.lua
 
-This is the main framework file which is managing and bootstrapping any further extensions. The `Core` comes with some other pre-configured helper functions.
+This is the main framework file which is managing and bootstrapping any further extensions/libraries. The `Core` comes with some other pre-configured helper functions.
 
 #### Core Features
 
-- Hot-reloading of configuration: This function is triggered every time a file has changed. This causes a reload of the hammerspoon configuration.
+- Hot-reloading of configuration: This function is triggered every time a file has changed. This causes a reload of the whole Hammerspoon configuration.
 - Own require function which can be called through: `prequire(...)`, this function will return the loaded file if its exist otherwise the return value is `nil`.
-- Hotkey-binding: This function can bind any function to the provided key and global hotkey. There is no need to use this function if you use extensions which are developed for this framework, otherwise you can use `core.bindHotkey(key, alt, fn)` (key - string, alt - boolean, fn - function) to manually bootstrap third-party extensions.
-- Library support: The framework now supports libraries which are intended to seperate core functionality and further functions which may be needed by more than one module (Have a look at `lib` directory for shipped libraries and `etc/library.lua` for library definition).
+- Hotkey-binding: This function can bind any function to the provided key and global hotkey. There is no need to use this function if you use extensions which are following the development guidelines described below, otherwise you can use `core.bindHotkey(key, alt, fn)` (key - string, alt - boolean, fn - function) to manually bootstrap third-party extensions.
+- Library support: The framework supports libraries which are intended to seperate core functionality and further functions which may be needed by more than one module (Have a look at `lib` directory for shipped libraries and `etc/library.lua` for library definition).
 
 ### modules.lua
 
@@ -124,7 +120,7 @@ The keymap provided by this file is used as global hotkey-configuration.
       {key = "b", alt = true, fn = core.mod.myfirstmod.bar}
     }
 
-    -- You can add other settings to the settings table, which then can be used by your extension
+    -- You can add other settings, which then can be used by your extension
     setting.language = {
       "en", "de"
     }
@@ -144,7 +140,7 @@ The keymap provided by this file is used as global hotkey-configuration.
     }
     ...
   ```
-4. `Core` will automatically reload configuration and your extension is going to be loaded.
+4. `Core` will automatically reload configuration and your extension is going to be loaded, otherwise reload config through `[CMD][ALT][CTRL][1]`.
 
 
 ## Library Development
