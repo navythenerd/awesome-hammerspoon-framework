@@ -6,6 +6,10 @@ mod.dependencies = {'stdloc'}
 local enabled = false
 
 local function startRedshift()
+  if enabled then
+    stopRedshift()
+  end
+
   if mod.context.config.dayColorTemp ~= nil then
     hs.redshift.start(mod.context.config.colorTemp, mod.sunrise.sunset, mod.sunrise.sunrise, mod.context.config.transition, false, nil, mod.context.config.dayColorTemp)
   else
@@ -16,8 +20,10 @@ local function startRedshift()
 end
 
 local function stopRedshift()
-  hs.redshift.stop()
-  enabled = false
+  if enabled then
+    hs.redshift.stop()
+    enabled = false
+  end
 end
 
 local function refreshSunrise()
