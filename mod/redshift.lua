@@ -4,6 +4,14 @@ mod.namespace = 'redshift'
 mod.dependencies = {'stdloc'}
 
 local enabled = false
+local watcher = nil
+
+local function stopRedshift()
+  if enabled then
+    hs.redshift.stop()
+    enabled = false
+  end
+end
 
 local function startRedshift()
   if enabled then
@@ -17,13 +25,6 @@ local function startRedshift()
   end
 
   enabled = true
-end
-
-local function stopRedshift()
-  if enabled then
-    hs.redshift.stop()
-    enabled = false
-  end
 end
 
 local function refreshSunrise()
@@ -42,9 +43,11 @@ end
 function mod.toggleRedshift()
   if enabled == true then
     stopRedshift()
+    watcher:stop()
     hs.alert.show("Redshift disabled")
   else
     startRedshift()
+    watcher:start()
     hs.alert.show("Redshift enabled")
   end
 end
