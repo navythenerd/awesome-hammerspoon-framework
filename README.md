@@ -11,7 +11,7 @@ The framework does the rest for you, e.g. loading dependencies, binding the hotk
    ```
    git clone https://gitlab.com/ckaufmann/hammerspoon-framework.git ~/.hammerspoon
    ```
-2. Edit `etc/modules.lua` to enable/disable the modules you want (by default all supplied extensions except `HeadphoneWatcher` are enabled).
+2. Edit `etc/modules.lua` to enable/disable the modules you want (by default all supplied extensions except `Redshift` are enabled).
 3. Edit the corresponding config files for the extensions in `etc` directory (Read below to learn more about configuration).
 4. Edit `etc/keymap.lua` to change global hotkeys.
 
@@ -73,10 +73,6 @@ This file is used for environment configuration, feel free to change the environ
 ### keymap.lua
 
 The keymap provided by this file is used as global hotkey-configuration.
-
-### Oh-My-Hammerspoon Support
-
-Now rudimentary OMH-Support added through shipped library `omh`. After mounting the omh library through `core.mountLibrary('omh')` you can use `core.lib.omh.go()` and `core.lib.omh.config()`. As the OMH-Support is provided as a library, you can define this as dependency in your modules as usual.
 
 ## Module Development
 
