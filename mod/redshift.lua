@@ -1,7 +1,7 @@
 local mod = {}
 
 mod.namespace = 'redshift'
-mod.dependencies = {'stdloc'}
+mod.dependencies = {'std'}
 
 local enabled = false
 local watcher = nil
@@ -28,13 +28,13 @@ local function startRedshift()
 end
 
 local function refreshSunrise()
-  mod.sunrise = core.lib.stdloc.getSunrise()
+  mod.sunrise = core.lib.std.location.getSunrise()
 end
 
 local function caffeinateHandler(event)
-  if (event == hs.caffeinate.watcher.systemWillSleep or event == hs.caffeinate.watcher.screensDidSleep or event == hs.caffeinate.watcher.systemWillSleep or event == hs.caffeinate.watcher.screensDidLock) then
+  if (event == hs.caffeinate.watcher.systemWillSleep) then
     stopRedshift()
-  elseif (event == hs.caffeinate.watcher.systemDidWake or event == hs.caffeinate.watcher.screensDidWake or event == hs.caffeinate.watcher.screensDidUnlock) then
+  elseif (event == hs.caffeinate.watcher.systemDidWake) then
     refreshSunrise()
     startRedshift()
   end

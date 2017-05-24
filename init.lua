@@ -6,15 +6,15 @@
 ------------------------------
 ---   Initializing core    ---
 ------------------------------
-core = require('core')
-core.init('etc/environment', 'etc/keymap')
+core = require("core")
+core.init("etc/environment", "etc/keymap")
 
 ------------------------------
 ---   Register libraries   ---
 ------------------------------
-core.registerLibraries('etc/libraries')
+core.registerLibraries("etc/libraries")
 
 ------------------------------
 ---  Bootstrapping modules ---
 ------------------------------
-core.bootstrap('etc/modules')
+core.bootstrap("etc/modules")

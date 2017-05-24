@@ -1,10 +1,10 @@
 local core = {}
 
-logger = hs.logger.new('Core')
+logger = hs.logger.new('Core', 'info')
 
 local init = false
-local environment
-local keymap
+local environment = nil
+local keymap = nil
 local libDb = {}
 
 core.lib = {}
@@ -86,7 +86,7 @@ function core.mountLibrary(libName)
       end
     end
   else
-    logger.e("Not initialised")
+    logger.e("Core needs to be initialized")
   end
 end
 
@@ -99,7 +99,7 @@ function core.umountLibrary(libName)
       logger.e("No library with name " .. libName .. " found")
     end
   else
-    logger.e("Not initialised")
+    logger.e("Core needs to be initialized")
   end
 end
 
@@ -151,20 +151,24 @@ local function bootstrapModule(file)
 end
 
 function core.bootstrap(modules)
-  if (type(modules) == 'string') then
-    file = prequire(modules)
+  if (init) then
+    if (type(modules) == 'string') then
+      file = prequire(modules)
 
-    if (file ~= nil and type(file) == 'table') then
-      core.bootstrap(file)
+      if (file ~= nil and type(file) == 'table') then
+        core.bootstrap(file)
+      else
+        logger.e("Cannot bootstrap from given datatype")
+      end
+    elseif (type(modules) == 'table') then
+      for n, module in ipairs(modules) do
+        bootstrapModule(module)
+      end
     else
       logger.e("Cannot bootstrap from given datatype")
     end
-  elseif (type(modules) == 'table') then
-    for n, module in ipairs(modules) do
-      bootstrapModule(module)
-    end
   else
-    logger.e("Cannot bootstrap from given datatype")
+    logger.e("Core needs to be initialized")
   end
 end
 
@@ -209,12 +213,12 @@ function core.init(env, map)
     core.setKeymap(map)
   end
 
-  if (environment ~= nil and type(environment) == 'table') then
+  if (environment ~= nil and type(environment) == 'table' and keymap ~= nil and type(keymap) == 'table') then
     hs.pathwatcher.new(environment.base, reloadConfig):start()
     core.bindHotkey("1", false, hs.reload)
     logger.i("Pathwatcher has been started")
     init = true
-    logger.i("Successful initialised ")
+    logger.i("Successful initialized")
   end
 end
 
