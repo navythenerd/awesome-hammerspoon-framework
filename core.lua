@@ -1,7 +1,6 @@
 local core = {}
 
-logger = hs.logger.new('Core', 'info')
-
+local logger = hs.logger.new('Core', 'info')
 local init = false
 local environment = nil
 local keymap = nil
@@ -92,8 +91,8 @@ end
 
 function core.umountLibrary(libName)
   if (init) then
-    if (core.lib[libName] ~= nil) then
-      core.lib[libName] = nil
+    if (lib[libName] ~= nil) then
+      lib[libName] = nil
       logger.i("Library " .. libName .. " unmounted")
     else
       logger.e("No library with name " .. libName .. " found")
