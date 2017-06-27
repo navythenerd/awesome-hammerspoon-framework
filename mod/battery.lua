@@ -21,7 +21,7 @@ end
 local function refreshRemainingTime()
   remainingTime = hs.battery.timeRemaining()
 
-  if batteryMenu then
+  if mod.context.config.enableMenubar then
     setTitle()
   end
 end
@@ -37,15 +37,14 @@ function mod.showRemainingTime()
 end
 
 function mod.init()
-  batteryWatcher = hs.battery.watcher.new(refreshRemainingTime)
-  batteryWatcher:start()
-  refreshTimer = hs.timer.doEvery(mod.context.config.refreshInterval, refreshRemainingTime)
-
   if (mod.context.config.enableMenubar) then
-    batteryMenu = hs.menubar.new()
+    batteryMenu = hs.menubar:new()
   end
 
   refreshRemainingTime()
+
+  batteryWatcher = hs.battery.watcher.new(refreshRemainingTime)
+  batteryWatcher:start()
 end
 
 return mod

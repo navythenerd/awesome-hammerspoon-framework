@@ -1,7 +1,6 @@
 local settings = {}
 
 settings.enableMenubar = true
-settings.refreshInterval = 300
 settings.batteryFormatTitle = "%s remaining"
 settings.powerSupplyTitle = "Power supply"
 settings.calulatingTitle = "Calculating..."
