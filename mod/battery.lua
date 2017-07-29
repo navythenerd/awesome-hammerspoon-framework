@@ -12,7 +12,7 @@ local function setTitle()
   if (remainingTime == -2) then
     batteryMenu:setTitle(mod.context.config.powerSupplyTitle)
   elseif (remainingTime == -1) then
-    batteryMenu:setTitle(mod.context.config.calulatingTitle)
+    batteryMenu:setTitle(mod.context.config.calculatingTitle)
   else
     batteryMenu:setTitle(string.format(mod.context.config.batteryFormatTitle, core.lib.std.system.toTime(remainingTime).string))
   end
@@ -28,11 +28,11 @@ end
 
 function mod.showRemainingTime()
   if (remainingTime == -2) then
-    hs.alert.show("Connected to power supply")
+    hs.alert.show(mod.context.config.powerSupplyTitle)
   elseif (remainingTime == -1) then
-    hs.alert.show("Remaining time is beeing calculated...")
+    hs.alert.show(mod.context.config.calculatingTitle)
   else
-    hs.alert.show(string.format("%s remaining", core.lib.std.system.toTime(remainingTime).string))
+    hs.alert.show(string.format(mod.context.config.batteryFormatTitle, core.lib.std.system.toTime(remainingTime).string))
   end
 end
 

@@ -111,6 +111,7 @@ local function bootstrapModule(file)
     if (core.mod[mod.namespace] == nil) then
       core.mod[mod.namespace] = mod
       core.mod[mod.namespace].context = {}
+      core.mod[mod.namespace].context.logger = hs.logger.new(mod.namespace, 'info')
       core.mod[mod.namespace].context.config = prequire(environment.config .. file)
       core.mod[mod.namespace].context.resources = environment.resources .. file .. '/'
 
