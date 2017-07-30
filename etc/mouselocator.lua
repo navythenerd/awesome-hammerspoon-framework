@@ -4,11 +4,11 @@ settings.color = {
   red=1,
   blue=0,
   green=0,
-  alpha=0.8
+  alpha=.8
 }
 
-settings.linewidth = 4
-settings.diameter = 80
+settings.linewidth = 8
+settings.diameter = 60
 
 settings.keymap = {
   {key = "m", fn = core.mod.mouselocator.mouseHighlight}
