@@ -3,17 +3,50 @@ local mod = {}
 mod.namespace = "caffeine"
 
 local caffeineState = false
+local screenWatcher = nil
 
-function mod.sleepNow()
+local function setMenuIcon()
+  if hs.caffeinate.get("displayIdle") then
+    mod.menubar:setIcon(mod.context.resources .. "caffeineIconActive.tiff")
+  else
+    mod.menubar:setIcon(mod.context.resources .. "caffeineIcon.tiff")
+  end
+end
+
+local function screenWatcherListener()
+  local monitorCount = #hs.screen.allScreens()
+
+  if (monitorCount > 1) then
+    hs.caffeinate.set("displayIdle", true, true)
+  else
+    if (caffeineState) then
+      hs.caffeinate.set("displayIdle", true, true)
+    else
+      hs.caffeinate.set("displayIdle", false, true)
+    end
+  end
+
+  setMenuIcon()
+end
+
+function mod.lockScreen()
+  hs.caffeinate.lockScreen()
+end
+
+function mod.systemSleep()
   hs.caffeinate.systemSleep()
 end
 
-function mod.sleepNowAndLock()
-  hs.caffeinate.lockScreen()
-  hs.timer.doAfter(4, mod.sleepNow)
+function mod.startScreensaver()
+  hs.caffeinate.startScreensaver()
 end
 
-function mod.menuIconOnClick()
+function mod.sleepLockSystem()
+  hs.caffeinate.lockScreen()
+  hs.timer.doAfter(5, hs.caffeinate.systemSleep())
+end
+
+function mod.caffeineMenuOnClick()
   local monitorCount = #hs.screen.allScreens()
 
   if hs.caffeinate.get("displayIdle") then
@@ -30,55 +63,24 @@ function mod.menuIconOnClick()
     end
   end
 
-  mod.setIcon()
-end
-
-function mod.setIcon()
-  if hs.caffeinate.get("displayIdle") then
-    mod.menubar:setIcon(mod.context.resources .. "caffeineIconActive.tiff")
-  else
-    mod.menubar:setIcon(mod.context.resources .. "caffeineIcon.tiff")
-  end
-end
-
-function mod.screenWatcherListener()
-  local monitorCount = #hs.screen.allScreens()
-
-  if (monitorCount > 1) then
-    hs.caffeinate.set("displayIdle", true, true)
-  else
-    if (caffeineState) then
-      hs.caffeinate.set("displayIdle", true, true)
-    else
-      hs.caffeinate.set("displayIdle", false, true)
-    end
-  end
-
-  mod.setIcon()
-end
-
-function mod.lockScreen()
-  hs.caffeinate.lockScreen()
+  setMenuIcon()
 end
 
 function mod.init()
   mod.menubar = hs.menubar.new()
+
   if mod.menubar then
-    mod.menubar:setClickCallback(mod.menuIconOnClick)
-    mod.setIcon()
+    mod.menubar:setClickCallback(mod.caffeineMenuOnClick)
+    setMenuIcon()
   end
 
   if mod.context.config.monitorMode then
-    mod.screenWatcher = hs.screen.watcher.new(mod.screenWatcherListener)
-    if mod.screenWatcher then
-      mod.screenWatcher:start()
+    screenWatcher = hs.screen.watcher.new(screenWatcherListener)
+
+    if screenWatcher then
+      screenWatcher:start()
     end
   end
-end
-
-function mod.unload()
-  hs.caffeinate.set("displayIdle", false, true)
-  mod.menubar:delete()
 end
 
 return mod

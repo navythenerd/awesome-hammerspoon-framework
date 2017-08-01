@@ -14,7 +14,7 @@ local function setTitle()
   elseif (remainingTime == -1) then
     batteryMenu:setTitle(mod.context.config.calculatingTitle)
   else
-    batteryMenu:setTitle(string.format(mod.context.config.batteryFormatTitle, core.lib.std.system.toTime(remainingTime).string))
+    batteryMenu:setTitle(string.format(mod.context.config.batteryFormatTitle, ahf.lib.std.system.toTime(remainingTime).string))
   end
 end
 
@@ -32,7 +32,7 @@ function mod.showRemainingTime()
   elseif (remainingTime == -1) then
     hs.alert.show(mod.context.config.calculatingTitle)
   else
-    hs.alert.show(string.format(mod.context.config.batteryFormatTitle, core.lib.std.system.toTime(remainingTime).string))
+    hs.alert.show(string.format(mod.context.config.batteryFormatTitle, ahf.lib.std.system.toTime(remainingTime).string))
   end
 end
 

@@ -6,7 +6,7 @@ settings.powerSupplyTitle = "Power supply"
 settings.calculatingTitle = "Calculating..."
 
 settings.keymap = {
-  {key = "b", alt = true, fn = core.mod.batterypanel.showRemainingTime},
+  {hyper = "hyper_shift", key = "b", fn = ahf.mod.batterypanel.showRemainingTime},
 }
 
 return settings

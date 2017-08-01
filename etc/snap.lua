@@ -1,13 +1,13 @@
 local settings = {}
 
 settings.keymap = {
-  {key = "f", fn = core.mod.snap.fullscreen},
-  {key = "d", fn = core.mod.snap.leftHalf},
-  {key = "g", fn = core.mod.snap.rightHalf},
-  {key = "e", fn = core.mod.snap.leftTopQuarter},
-  {key = "r", fn = core.mod.snap.rightTopQuarter},
-  {key = "c", fn = core.mod.snap.leftBottomQuarter},
-  {key = "v", fn = core.mod.snap.rightBottomQuarter}
+  {hyper = "hyper", key = "f", fn = ahf.mod.snap.fullscreen},
+  {hyper = "hyper", key = "d", fn = ahf.mod.snap.leftHalf},
+  {hyper = "hyper", key = "g", fn = ahf.mod.snap.rightHalf},
+  {hyper = "hyper", key = "e", fn = ahf.mod.snap.leftTopQuarter},
+  {hyper = "hyper", key = "r", fn = ahf.mod.snap.rightTopQuarter},
+  {hyper = "hyper", key = "c", fn = ahf.mod.snap.leftBottomQuarter},
+  {hyper = "hyper", key = "v", fn = ahf.mod.snap.rightBottomQuarter}
 }
 
 return settings

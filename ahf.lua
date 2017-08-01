@@ -1,13 +1,13 @@
-local core = {}
+local ahf = {}
 
-local logger = hs.logger.new('Core', 'info')
+local logger = hs.logger.new('AHF', 'info')
 local init = false
 local environment = nil
 local keymap = nil
 local libDb = {}
 
-core.lib = {}
-core.mod = {}
+ahf.lib = {}
+ahf.mod = {}
 
 local function reloadConfig(files)
   doReload = false
@@ -28,23 +28,23 @@ function prequire(...)
   return nil
 end
 
-function core.bindHotkey(key, alt, fn)
-  if alt then
-    hs.hotkey.bind(keymap.hyper_shift, key, fn)
+function ahf.bindHotkey(hyper, key, fn)
+  if (keymap[hyper] ~= nil) then
+    hs.hotkey.bind(keymap[hyper], key, fn)
   else
-    hs.hotkey.bind(keymap.hyper, key, fn)
+    logger.e("Invalid hyper name for keymap binding")
   end
 end
 
-function core.unbindHotkey(key, alt)
-  if alt then
-    hs.hotkey.deleteAll(keymap.hyper_shift, key)
+function ahf.ubindHotkey(hyper, key)
+  if (keymap[hyper] ~= nil) then
+    hs.hotkey.deleteAll(keymap[hyper], key)
   else
-    hs.hotkey.deleteAll(keymap.hyper, key)
+    logger.e("Invalid hyper name for keymap unbinding")
   end
 end
 
-function core.registerLibraries(lib)
+function ahf.registerLibraries(lib)
   if (type(lib) == 'table') then
     libDb = lib
     logger.i("Libraries have been registered")
@@ -62,22 +62,22 @@ function core.registerLibraries(lib)
   end
 end
 
-function core.mountLibrary(libName)
+function ahf.mountLibrary(libName)
   if (init) then
     for i, lib in ipairs(libDb) do
       if lib[1] == libName then
-        if (core.lib[libName] == nil) then
+        if (ahf.lib[libName] == nil) then
           logger.i("Mounting library " .. libName)
-          core.lib[libName] = {}
+          ahf.lib[libName] = {}
 
           if (type(lib[2]) == 'table') then
             for i, libDep in ipairs(lib[2]) do
               local library = prequire(environment.libraries .. '/' .. libDep)
-              core.lib[libName][library.namespace] = library
+              ahf.lib[libName][library.namespace] = library
             end
           elseif (type(lib[2]) == 'string') then
             local library = prequire(environment.libraries .. '/' .. lib[2])
-            core.lib[libName] = library
+            ahf.lib[libName] = library
           end
         else
           logger.i("Library " .. libName .. " already mounted")
@@ -85,11 +85,11 @@ function core.mountLibrary(libName)
       end
     end
   else
-    logger.e("Core needs to be initialized")
+    logger.e("ahf needs to be initialized")
   end
 end
 
-function core.umountLibrary(libName)
+function ahf.umountLibrary(libName)
   if (init) then
     if (lib[libName] ~= nil) then
       lib[libName] = nil
@@ -98,7 +98,7 @@ function core.umountLibrary(libName)
       logger.e("No library with name " .. libName .. " found")
     end
   else
-    logger.e("Core needs to be initialized")
+    logger.e("ahf needs to be initialized")
   end
 end
 
@@ -108,34 +108,30 @@ local function bootstrapModule(file)
   if (mod ~= nil and type(mod) == 'table') then
     logger.i("Boostrapping " .. file)
 
-    if (core.mod[mod.namespace] == nil) then
-      core.mod[mod.namespace] = mod
-      core.mod[mod.namespace].context = {}
-      core.mod[mod.namespace].context.logger = hs.logger.new(mod.namespace, 'info')
-      core.mod[mod.namespace].context.config = prequire(environment.config .. file)
-      core.mod[mod.namespace].context.resources = environment.resources .. file .. '/'
+    if (ahf.mod[mod.namespace] == nil) then
+      ahf.mod[mod.namespace] = mod
+      ahf.mod[mod.namespace].context = {}
+      ahf.mod[mod.namespace].context.logger = hs.logger.new(mod.namespace, 'info')
+      ahf.mod[mod.namespace].context.config = prequire(environment.config .. file)
+      ahf.mod[mod.namespace].context.resources = environment.resources .. file .. '/'
 
-      if (core.mod[mod.namespace].dependencies ~= nil and type(core.mod[mod.namespace].dependencies) == 'table') then
-        for n, lib in ipairs(core.mod[mod.namespace].dependencies) do
-          core.mountLibrary(lib)
+      if (ahf.mod[mod.namespace].dependencies ~= nil and type(ahf.mod[mod.namespace].dependencies) == 'table') then
+        for n, lib in ipairs(ahf.mod[mod.namespace].dependencies) do
+          ahf.mountLibrary(lib)
         end
       end
 
-      if (core.mod[mod.namespace].init ~= nil and type(core.mod[mod.namespace].init) == 'function') then
+      if (ahf.mod[mod.namespace].init ~= nil and type(ahf.mod[mod.namespace].init) == 'function') then
         logger.i("Initializing " .. file)
-        core.mod[mod.namespace].init()
+        ahf.mod[mod.namespace].init()
       end
 
-      if (core.mod[mod.namespace].context.config ~= nil and type(core.mod[mod.namespace].context.config) == 'table') then
-        if (core.mod[mod.namespace].context.config.keymap ~= nil and type(core.mod[mod.namespace].context.config.keymap) == 'table') then
+      if (ahf.mod[mod.namespace].context.config ~= nil and type(ahf.mod[mod.namespace].context.config) == 'table') then
+        if (ahf.mod[mod.namespace].context.config.keymap ~= nil and type(ahf.mod[mod.namespace].context.config.keymap) == 'table') then
           logger.i("Keymap for "  .. file .. " found")
-          for n, keymap in ipairs(core.mod[mod.namespace].context.config.keymap) do
-            if (keymap.key ~= nil and keymap.fn ~= nil and type(keymap.key) == 'string' and type(keymap.fn) == 'function') then
-              if (keymap.alt) then
-                core.bindHotkey(keymap.key, true, keymap.fn)
-              else
-                core.bindHotkey(keymap.key, false, keymap.fn)
-              end
+          for n, keymap in ipairs(ahf.mod[mod.namespace].context.config.keymap) do
+            if (keymap.hyper ~= nil and keymap.key ~= nil and keymap.fn ~= nil and type(keymap.hyper) == 'string' and type(keymap.key) == 'string' and type(keymap.fn) == 'function') then
+              ahf.bindHotkey(keymap.hyper, keymap.key, keymap.fn)
             else
               logger.e("Error in keymap of " .. file)
             end
@@ -150,13 +146,13 @@ local function bootstrapModule(file)
   end
 end
 
-function core.bootstrap(modules)
+function ahf.bootstrap(modules)
   if (init) then
     if (type(modules) == 'string') then
       file = prequire(modules)
 
       if (file ~= nil and type(file) == 'table') then
-        core.bootstrap(file)
+        ahf.bootstrap(file)
       else
         logger.e("Cannot bootstrap from given datatype")
       end
@@ -168,11 +164,11 @@ function core.bootstrap(modules)
       logger.e("Cannot bootstrap from given datatype")
     end
   else
-    logger.e("Core needs to be initialized")
+    logger.e("ahf needs to be initialized")
   end
 end
 
-function core.setEnvironment(env)
+function ahf.setEnvironment(env)
   if (type(env) == 'table') then
     environment = env
     logger.i("Environemnt has been loaded")
@@ -188,7 +184,7 @@ function core.setEnvironment(env)
   end
 end
 
-function core.setKeymap(map)
+function ahf.setKeymap(map)
   if (type(map) == 'table') then
     keymap = map
     logger.i("Keymap has been loaded")
@@ -204,22 +200,22 @@ function core.setKeymap(map)
   end
 end
 
-function core.init(env, map)
+function ahf.init(env, map)
   if (env ~= nil) then
-    core.setEnvironment(env)
+    ahf.setEnvironment(env)
   end
 
   if (map ~= nil) then
-    core.setKeymap(map)
+    ahf.setKeymap(map)
   end
 
   if (environment ~= nil and type(environment) == 'table' and keymap ~= nil and type(keymap) == 'table') then
     hs.pathwatcher.new(environment.base, reloadConfig):start()
-    core.bindHotkey("1", false, hs.reload)
+    ahf.bindHotkey("hyper", '1', hs.reload)
     logger.i("Pathwatcher has been started")
     init = true
     logger.i("Successful initialized")
   end
 end
 
-return core
+return ahf

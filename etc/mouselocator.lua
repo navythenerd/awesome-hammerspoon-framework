@@ -11,7 +11,7 @@ settings.linewidth = 8
 settings.diameter = 60
 
 settings.keymap = {
-  {key = "m", fn = core.mod.mouselocator.mouseHighlight}
+  {hyper = "hyper", key = "m", fn = ahf.mod.mouselocator.mouseHighlight}
 }
 
 return settings

@@ -2,7 +2,7 @@
 
 ## A framework for [Hammerspoon](http://www.hammerspoon.org)
 
-This is a framework for your Hammerspoon configuration. The aims of this framework are to unitize the structure of Hammerspoon functionalities (called `modules` in this framework), thus it is a seperate layer between the Hammerspoon API and the LUA-Scripting engine. So everyone can include modules from other developers with ease.
+This is a framework for your Hammerspoon configuration. The aims of this framework are to unitize the structure of Hammerspoon functionalities (called `modules` in this framework). So everyone can include modules from other developers with ease.
 The framework does the rest for you, e.g. loading dependencies, binding the hotkeys etc..
 
 ### Instructions
@@ -23,8 +23,9 @@ By default the following modules are supplied (Inspiration by [Hammerspoon's sam
   - Temporally toggling off of Redshift is provided through `[CMD][ALT][CTRL][-]`
   - Redshift config is located at `etc/redshift.lua`.
 - Caffeine - Disable standby time for your screen.
-  - Caffeine can be toggled through menubar icon (Cup) or through hotkey `[CMD][ALT][CTRL][S]`.
+  - Caffeine can be toggled through menubar icon (Cup) or through hotkey `[SHIFT][CMD][ALT][CTRL][S]`.
   - Furthermore through `[CMD][ALT][CTRL][L]` you can lock your screen immediately.
+  - Through `[CMD][ALT][CTRL][S]` Caffeine starts your Mac´s screensaver.
   - Through `[SHIFT][CMD][ALT][CTRL][S]` Caffeine puts your Mac into sleep-idle immediately.
   - With `[SHIFT][CMD][ALT][CTRL][L]` Caffeine puts your Mac into sleep-idle after your screen was locked.
   - MonitorMode automatically disables/enables the display idle at connection/disconnection of an external monitor (Can be disabled through config)
@@ -45,26 +46,26 @@ By default the following modules are supplied (Inspiration by [Hammerspoon's sam
 
 ## General stucture
 
-The framework provides some default files which are needed to get the framework working. These main files are `init.lua` and `core.lua`. Through `etc/environment.lua`, `etc/keymap.lua`, `etc/libraries.lua` further settings are saved to, these are loaded at init time (see `init.lua`).
+The framework provides some default files which are needed to get the framework working. These main files are `init.lua` and `ahf.lua`. Through `etc/environment.lua`, `etc/keymap.lua`, `etc/libraries.lua` further settings are saved to, these are loaded at init time (see `init.lua`).
 
 ### init.lua
 
 This file is the main entry point of every Hammerspoon configuration. This file is used to load the `Core` and bootstrap all the specified extensions. So it is not necessary to change this file.
 
-### core.lua
+### ahf.lua
 
-This is the main framework file which is managing and bootstrapping any further extensions/libraries. The `Core` comes with some other pre-configured helper functions.
+This is the main framework file which is managing and bootstrapping any further extensions/libraries. The `AHF` comes with some other pre-configured helper functions.
 
-#### Core Features
+#### AHF Features
 
 - Hot-reloading of configuration: This function is triggered every time a file has changed. This causes a reload of the whole Hammerspoon configuration.
 - Own require function which can be called through: `prequire(...)`, this function will return the loaded file if its exist otherwise the return value is `nil`.
-- Hotkey-binding: This function can bind any function to the provided key and global hotkey. There is no need to use this function if you use extensions which are following the development guidelines described below, otherwise you can use `core.bindHotkey(key, alt, fn)` (key - string, alt - boolean, fn - function) to manually bootstrap third-party extensions.
+- Hotkey-binding: This function can bind any function to the provided key and global hotkey. There is no need to use this function if you use extensions which are following the development guidelines described below, otherwise you can use `core.bindHotkey(hyper, alt, fn)` (hyper - string (Hypername defined in `keymap.lua`), key - keystring, fn - function) to manually bootstrap third-party extensions.
 - Library support: The framework supports libraries which are intended to seperate core functionality and further functions which may be needed by more than one module (Have a look at `lib` directory for shipped libraries and `etc/library.lua` for library definition).
 
 ### modules.lua
 
-This file is used to load modules. There is provided one table named `modules`, add your module's file name as string to the table and the `Core` will bootstrap them from `mod` directory using the corresponding configuration file from `etc` directory.
+This file is used to load modules. There is provided one table named `modules`, add your module's file name as string to the table and the `AHF` will bootstrap them from `mod` directory using the corresponding configuration file from `etc` directory.
 
 ### environment.lua
 
@@ -72,7 +73,7 @@ This file is used for environment configuration, feel free to change the environ
 
 ### keymap.lua
 
-The keymap provided by this file is used as global hotkey-configuration.
+The keymap provided by this file is used as global hotkey-configuration. Each Keymap line is identified by an unique `Hyper-Name` which is needed to bind your mod keymap (see keymap binding).
 
 ## Module Development
 
@@ -82,8 +83,8 @@ The keymap provided by this file is used as global hotkey-configuration.
   ```
     local mod = {}
 
-    mod.namespace = "myfirstmod" -- Is used for mounting your mod into core.mod, so every module is accessibly through core.mod.<namespace>
-    mod.dependencies = {'stdlib', <foo>, <bar>, ...} -- Dependency list, these dependencies are mounted by the core, only necessary if your extension needs some libs (E.g. stdlib is used for getRandomString() function)
+    mod.namespace = "myfirstmod" -- Is used for mounting your mod into core.mod, so every module is accessibly through ahf.mod.<namespace>
+    mod.dependencies = {'std', <foo>, <bar>, ...} -- Dependency list, these dependencies are mounted by ahf, only necessary if your extension needs some libs (E.g. std is used for getRandomString() function)
 
     function mod.foo()
       hs.alert.show('foo triggered')
@@ -102,9 +103,9 @@ The keymap provided by this file is used as global hotkey-configuration.
     end
 
     function mod.unload()
-      -- This function is called by core if the mod will be unmounted, so it should quit all necessary operations
+      -- This function is called by ahf if the mod will be unmounted, so it should quit all necessary operations
       -- Unload all created timers, menubars, etc.
-      -- Don't unload keymap manually, this will be automatically done by core
+      -- Don't unload keymap manually, this will be automatically done by ahf
     end
 
     return mod
@@ -116,8 +117,8 @@ The keymap provided by this file is used as global hotkey-configuration.
     -- Make sure functions foo and bar are available
     -- This will bind [CMD][ALT][CTRL][A] to function 'foo' and [CMD][ALT][CTRL][SHIFT][B] to function 'bar'
     settings.keymap = {
-      {key = "a", fn = core.mod.myfirstmod.foo},
-      {key = "b", alt = true, fn = core.mod.myfirstmod.bar}
+      {hyper = "hyper", key = "a", fn = ahf.mod.myfirstmod.foo},
+      {hyper = "hyper_shift", key = "b", fn = ahf.mod.myfirstmod.bar}
     }
 
     -- You can add other settings, which then can be used by your extension
@@ -140,7 +141,7 @@ The keymap provided by this file is used as global hotkey-configuration.
     }
     ...
   ```
-4. `Core` will automatically reload configuration and your extension is going to be loaded, otherwise reload config through `[CMD][ALT][CTRL][1]`.
+4. `AHF` will automatically reload configuration and your extension is going to be loaded, otherwise reload config through `[CMD][ALT][CTRL][1]`.
 
 
 ## Library Development
@@ -163,9 +164,8 @@ The keymap provided by this file is used as global hotkey-configuration.
     local lib = {}
 
     lib = {
-      { "stdlib", {"random"} },
-      { "location", "location" },
-      { "mylib", "myfirstlib" } -- Second param can also be a table see stdlib, then you can add many lib-files and bundle them to one namspaced lib
+      { "std", {"system", "random", "location"} },
+      { "mylib", "myfirstlib" } -- Second param can also be a table see std, then you can add many lib-files and bundle them to one namspaced lib
     }
 
     return lib

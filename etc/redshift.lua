@@ -5,7 +5,7 @@ settings.colorTemp = 2700
 settings.dayColorTemp = 6500
 
 settings.keymap = {
-  { key = "-", fn = core.mod.redshift.toggleRedshift },
+  {hyper = "hyper" key = "-", fn = ahf.mod.redshift.toggleRedshift },
 }
 
 return settings

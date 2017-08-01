@@ -28,7 +28,7 @@ local function startRedshift()
 end
 
 local function refreshSunrise()
-  mod.sunrise = core.lib.std.location.getSunrise()
+  mod.sunrise = ahf.lib.std.location.getSunrise()
 end
 
 local function caffeinateHandler(event)

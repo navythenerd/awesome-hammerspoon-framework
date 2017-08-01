@@ -3,10 +3,11 @@ local settings = {}
 settings.monitorMode = true
 
 settings.keymap = {
-  {key = "s", fn = core.mod.caffeine.menuIconOnClick},
-  {key = "l", fn = core.mod.caffeine.lockScreen}, --Lock only
-  {key = "s", alt = true, fn = core.mod.caffeine.sleepNow}, --Sleep immediatly repspecting default sleep lock time
-  {key = "l", alt = true, fn = core.mod.caffeine.sleepNowAndLock} --Sleep immediatly but lock before
+  {hyper = "hyper_shift", key = "c", fn = ahf.mod.caffeine.caffeineMenuOnClick},
+  {hyper = "hyper", key = "s", fn = ahf.mod.caffeine.startScreensaver}, --Start screensaver
+  {hyper = "hyper_shift", key = "s", fn = ahf.mod.caffeine.systemSleep}, --Sleep immediatly
+  {hyper = "hyper", key = "l", fn = ahf.mod.caffeine.lockScreen} --Lock only
 }
+
 
 return settings
