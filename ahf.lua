@@ -146,6 +146,18 @@ local function bootstrapModule(file)
   end
 end
 
+local function unloadModule(namespace)
+  if (ahf.mod[namespace] ~= nil) then
+    logger.i("Unloading module " .. namespace)
+
+    if (ahf.mod[namespace]['unload'] ~= nil and type(ahf.mod[namespace]['unload']) == 'function') then
+      ahf.mod[namespace]['unload']()
+    end
+
+    ahf.mod[namespace] = nil
+  end
+end
+
 function ahf.bootstrap(modules)
   if (init) then
     if (type(modules) == 'string') then
@@ -162,6 +174,18 @@ function ahf.bootstrap(modules)
       end
     else
       logger.e("Cannot bootstrap from given datatype")
+    end
+  else
+    logger.e("ahf needs to be initialized")
+  end
+end
+
+function ahf.unload(modules)
+  if (init) then
+    if (type(modules) == 'table') then
+      for n, module in ipairs(modules) do
+        unloadModule(module)
+      end
     end
   else
     logger.e("ahf needs to be initialized")
