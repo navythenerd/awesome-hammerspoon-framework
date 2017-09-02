@@ -1,12 +1,12 @@
-local settings = {}
+local config = {}
 
-settings.enableMenubar = true
-settings.batteryFormatTitle = "%s remaining"
-settings.powerSupplyTitle = "Power supply"
-settings.calculatingTitle = "Calculating..."
+config.enableMenubar = true
+config.batteryText = "%s remaining"
+config.powerSupplyText = "Connected to power supply"
+config.calculatingText = "Calculating remaining time of usage"
 
-settings.keymap = {
+config.keymap = {
   {hyper = "hyper_shift", key = "b", fn = ahf.mod.batterypanel.showRemainingTime},
 }
 
-return settings
+return config

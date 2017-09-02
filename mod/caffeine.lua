@@ -4,12 +4,13 @@ mod.namespace = "caffeine"
 
 local caffeineState = false
 local screenWatcher = nil
+local menubar = nil
 
 local function setMenuIcon()
   if hs.caffeinate.get("displayIdle") then
-    mod.menubar:setIcon(mod.context.resources .. "caffeineIconActive.tiff")
+    menubar:setIcon(mod.context.resources .. "caffeineIconActive.tiff")
   else
-    mod.menubar:setIcon(mod.context.resources .. "caffeineIcon.tiff")
+    menubar:setIcon(mod.context.resources .. "caffeineIcon.tiff")
   end
 end
 
@@ -67,10 +68,10 @@ function mod.caffeineMenuOnClick()
 end
 
 function mod.init()
-  mod.menubar = hs.menubar.new()
+  menubar = hs.menubar.new()
 
-  if mod.menubar then
-    mod.menubar:setClickCallback(mod.caffeineMenuOnClick)
+  if menubar then
+    menubar:setClickCallback(mod.caffeineMenuOnClick)
     setMenuIcon()
   end
 
@@ -81,6 +82,11 @@ function mod.init()
       screenWatcher:start()
     end
   end
+end
+
+function mod.unload()
+  menubar:delete()
+  menubar = nil
 end
 
 return mod

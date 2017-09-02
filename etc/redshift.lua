@@ -1,11 +1,11 @@
-local settings = {}
+local config = {}
 
-settings.transition = 3600
-settings.colorTemp = 2700
-settings.dayColorTemp = 6500
+config.transition = 3600
+config.colorTemp = 2700
+config.dayColorTemp = 6500
 
-settings.keymap = {
+config.keymap = {
   {hyper = "hyper" key = "-", fn = ahf.mod.redshift.toggleRedshift },
 }
 
-return settings
+return config

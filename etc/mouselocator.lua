@@ -1,17 +1,17 @@
-local settings = {}
+local config = {}
 
-settings.color = {
+config.color = {
   red=1,
   blue=0,
   green=0,
   alpha=.8
 }
 
-settings.linewidth = 8
-settings.diameter = 60
+config.linewidth = 8
+config.diameter = 60
 
-settings.keymap = {
+config.keymap = {
   {hyper = "hyper", key = "m", fn = ahf.mod.mouselocator.mouseHighlight}
 }
 
-return settings
+return config

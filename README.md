@@ -46,15 +46,20 @@ By default the following modules are supplied (Inspiration by [Hammerspoon's sam
 
 ## General stucture
 
-The framework provides some default files which are needed to get the framework working. These main files are `init.lua` and `ahf.lua`. Through `etc/environment.lua`, `etc/keymap.lua`, `etc/libraries.lua` further settings are saved to, these are loaded at init time (see `init.lua`).
+The framework provides some default files which are needed to get the framework working. These main files are `init.lua` and `ahf.lua` (Framework file). Through `etc/ahf.lua` the framework can be configured.
 
 ### init.lua
 
-This file is the main entry point of every Hammerspoon configuration. This file is used to load the `Core` and bootstrap all the specified extensions. So it is not necessary to change this file.
+This file is the main entry point of every Hammerspoon configuration. This file is used to load and initialize the ahf framework. So it is not necessary to change this file.
 
 ### ahf.lua
 
 This is the main framework file which is managing and bootstrapping any further extensions/libraries. The `AHF` comes with some other pre-configured helper functions.
+
+### etc/ahf.lua
+
+This is the configuration file for the Framework. Hotkeys, environment vars can be specified here.
+You may also specify your modules which are going to be bootstrapped by the framework at init time.
 
 #### AHF Features
 
@@ -63,23 +68,13 @@ This is the main framework file which is managing and bootstrapping any further 
 - Hotkey-binding: This function can bind any function to the provided key and global hotkey. There is no need to use this function if you use extensions which are following the development guidelines described below, otherwise you can use `core.bindHotkey(hyper, alt, fn)` (hyper - string (Hypername defined in `keymap.lua`), key - keystring, fn - function) to manually bootstrap third-party extensions.
 - Library support: The framework supports libraries which are intended to seperate core functionality and further functions which may be needed by more than one module (Have a look at `lib` directory for shipped libraries and `etc/library.lua` for library definition).
 
-### modules.lua
 
-This file is used to load modules. There is provided one table named `modules`, add your module's file name as string to the table and the `AHF` will bootstrap them from `mod` directory using the corresponding configuration file from `etc` directory.
-
-### environment.lua
-
-This file is used for environment configuration, feel free to change the environment entries even it is not recommended.
-
-### keymap.lua
-
-The keymap provided by this file is used as global hotkey-configuration. Each Keymap line is identified by an unique `Hyper-Name` which is needed to bind your mod keymap (see keymap binding).
 
 ## Module Development
 
 1. Create your own module file `mod/myfirstmod.lua`.
 2. Create your corresponding configuration file `etc/myfirstmod.lua` (Same file name as the mod file!).
-2. Add the base information needed to provide a native module:
+3. Edit main module file:
   ```
     local mod = {}
 
@@ -110,7 +105,7 @@ The keymap provided by this file is used as global hotkey-configuration. Each Ke
 
     return mod
   ```
-4. Add a keymap to your configuration file `etc/myfirstmod.lua`.
+4. Configuration file `etc/myfirstmod.lua`.
   ```
     local settings = {}
 
@@ -119,6 +114,13 @@ The keymap provided by this file is used as global hotkey-configuration. Each Ke
     settings.keymap = {
       {hyper = "hyper", key = "a", fn = ahf.mod.myfirstmod.foo},
       {hyper = "hyper_shift", key = "b", fn = ahf.mod.myfirstmod.bar}
+    }
+
+    -- You may also specify pathwatchers, these are gonna be started automatically
+    settings.pathwatcher = {
+      {path = "/root/dir", fn = ahf.mod.myfirstmod.foo},
+      {path = "/usr/local/bin", fn = ahf.mod.myfirstmod.bar},
+      ...
     }
 
     -- You can add other settings, which then can be used by your extension
@@ -130,10 +132,10 @@ The keymap provided by this file is used as global hotkey-configuration. Each Ke
 
     return settings
   ```
-3. Add your new created extension to the `modules` table in `etc/modules.lua` to load it.
+3. Add your new created extension to the `loadModules` table in `etc/ahf.lua` to load it.
   ```
     ...
-    local modules = {
+    config.loadModules = {
       "...",
       "...",
       "myfirstextension",
@@ -159,14 +161,12 @@ The keymap provided by this file is used as global hotkey-configuration. Each Ke
 
     return lib
   ```
-4. Add a library to your definition file `etc/library.lua`.
+4. Add a library definition in `etc/ahf.lua`.
   ```
-    local lib = {}
-
-    lib = {
+    ...
+    config.libraries = {
       { "std", {"system", "random", "location"} },
       { "mylib", "myfirstlib" } -- Second param can also be a table see std, then you can add many lib-files and bundle them to one namspaced lib
     }
-
-    return lib
+    ...
   ```

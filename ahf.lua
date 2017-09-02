@@ -4,12 +4,12 @@ local logger = hs.logger.new('AHF', 'info')
 local init = false
 local environment = nil
 local keymap = nil
-local libDb = {}
+local libDb = nil
 
 ahf.lib = {}
 ahf.mod = {}
 
-local function reloadConfig(files)
+function reloadConfig(files)
   doReload = false
   for _,file in pairs(files) do
     if file:sub(-4) == ".lua" then
@@ -41,24 +41,6 @@ function ahf.ubindHotkey(hyper, key)
     hs.hotkey.deleteAll(keymap[hyper], key)
   else
     logger.e("Invalid hyper name for keymap unbinding")
-  end
-end
-
-function ahf.registerLibraries(lib)
-  if (type(lib) == 'table') then
-    libDb = lib
-    logger.i("Libraries have been registered")
-  elseif (type(lib) == 'string') then
-    local libDef = prequire(lib)
-
-    if (libDef ~= nil and type(libDef) == 'table') then
-      libDb = libDef
-      logger.i("Libraries have been registered")
-    else
-      logger.e("Cannot register libraries from given file")
-    end
-  else
-    logger.e("Cannot register libraries from given datatype")
   end
 end
 
@@ -102,6 +84,13 @@ function ahf.umountLibrary(libName)
   end
 end
 
+function ahf.registerPathwatcher(mod, path, fn)
+  local pathwatcher = hs.pathwatcher.new(path, fn)
+  table.insert(ahf.mod[mod]['context']['pathwatcher'], pathwatcher)
+
+  pathwatcher:start()
+end
+
 local function bootstrapModule(file)
   local mod = prequire(environment.modules .. file)
 
@@ -114,6 +103,14 @@ local function bootstrapModule(file)
       ahf.mod[mod.namespace].context.logger = hs.logger.new(mod.namespace, 'info')
       ahf.mod[mod.namespace].context.config = prequire(environment.config .. file)
       ahf.mod[mod.namespace].context.resources = environment.resources .. file .. '/'
+      ahf.mod[mod.namespace].context.pathwatcher = {}
+      
+      if (ahf.mod[mod.namespace].context.config ~= nil and ahf.mod[mod.namespace].context.config.pathwatcher ~= nil and type(ahf.mod[mod.namespace].context.config.pathwatcher) == 'table') then
+        for n, pathwatcher in ipairs(ahf.mod[mod.namespace].context.config.pathwatcher) do
+          logger.i("Register pathwatcher for " .. pathwatcher.path)
+          ahf.registerPathwatcher(mod.namespace, pathwatcher.path, pathwatcher.fn)
+        end
+      end
 
       if (ahf.mod[mod.namespace].dependencies ~= nil and type(ahf.mod[mod.namespace].dependencies) == 'table') then
         for n, lib in ipairs(ahf.mod[mod.namespace].dependencies) do
@@ -150,6 +147,19 @@ local function unloadModule(namespace)
   if (ahf.mod[namespace] ~= nil) then
     logger.i("Unloading module " .. namespace)
 
+    if (ahf.mod[namespace].context.config ~= nil and type(ahf.mod[namespace].context.config) == 'table') then
+        if (ahf.mod[namespace].context.config.keymap ~= nil and type(ahf.mod[namespace].context.config.keymap) == 'table') then
+          logger.i("Keymap for "  .. namespace .. " found")
+          for n, keymap in ipairs(ahf.mod[namespace].context.config.keymap) do
+            if (keymap.hyper ~= nil and keymap.key ~= nil and type(keymap.hyper) == 'string' and type(keymap.key) == 'string') then
+              ahf.ubindHotkey(keymap.hyper, keymap.key)
+            else
+              logger.e("Error in keymap of " .. namespace)
+            end
+          end
+        end
+      end
+
     if (ahf.mod[namespace]['unload'] ~= nil and type(ahf.mod[namespace]['unload']) == 'function') then
       ahf.mod[namespace]['unload']()
     end
@@ -160,20 +170,14 @@ end
 
 function ahf.bootstrap(modules)
   if (init) then
-    if (type(modules) == 'string') then
-      file = prequire(modules)
-
-      if (file ~= nil and type(file) == 'table') then
-        ahf.bootstrap(file)
-      else
-        logger.e("Cannot bootstrap from given datatype")
-      end
-    elseif (type(modules) == 'table') then
+    if (type(modules) == 'table') then 
       for n, module in ipairs(modules) do
         bootstrapModule(module)
       end
+    elseif (type(modules) == 'string') then
+      bootstrapModule(modules)
     else
-      logger.e("Cannot bootstrap from given datatype")
+      logger.e("Cannot bootstrap modules from given datatype")
     end
   else
     logger.e("ahf needs to be initialized")
@@ -186,59 +190,36 @@ function ahf.unload(modules)
       for n, module in ipairs(modules) do
         unloadModule(module)
       end
+    elseif (type(modules) == 'string') then
+      unloadModule(modules)
+    else
+      logger.e("Cannot unload modules from given datatype")
     end
   else
     logger.e("ahf needs to be initialized")
   end
 end
 
-function ahf.setEnvironment(env)
-  if (type(env) == 'table') then
-    environment = env
-    logger.i("Environemnt has been loaded")
-  elseif (type(env) == 'string') then
-    environment = prequire(env)
-    if (environment ~= nil and type(environment) == 'table') then
-      logger.i("Environment has been loaded")
-    else
-      logger.e("Failed loading environment from given file")
-    end
-  else
-    logger.e("Failed loading environment from given datatype")
-  end
-end
+function ahf.init(conf)
+  if (conf ~= nil and type(conf) == 'table') then
+    environment = conf.env
+    logger.i("Enviroment has been set")
+    keymap = conf.keymap
+    logger.i("Keymap has been set")
+    libDb = conf.libraries
+    logger.i("Libraries have been registered")
 
-function ahf.setKeymap(map)
-  if (type(map) == 'table') then
-    keymap = map
-    logger.i("Keymap has been loaded")
-  elseif (type(map) == 'string') then
-    keymap = prequire(map)
-    if (keymap ~= nil and type(keymap) == 'table') then
-      logger.i("Keymap has been loaded")
-    else
-      logger.e("Failed loading keymap from given file")
-    end
-  else
-    logger.e("Failed loading keymap from given datatype")
-  end
-end
-
-function ahf.init(env, map)
-  if (env ~= nil) then
-    ahf.setEnvironment(env)
-  end
-
-  if (map ~= nil) then
-    ahf.setKeymap(map)
-  end
-
-  if (environment ~= nil and type(environment) == 'table' and keymap ~= nil and type(keymap) == 'table') then
     hs.pathwatcher.new(environment.base, reloadConfig):start()
-    ahf.bindHotkey("hyper", '1', hs.reload)
+    ahf.bindHotkey(conf.hotkeys.reload.hyper, conf.hotkeys.reload.key, hs.reload)
     logger.i("Pathwatcher has been started")
+
     init = true
     logger.i("Successful initialized")
+
+    logger.i("Auto bootstrap modules")
+    ahf.bootstrap(conf.loadModules)
+  else
+    logger.e("Config table is needed for initialization")
   end
 end
 

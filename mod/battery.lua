@@ -8,13 +8,25 @@ local refreshTimer = nil
 local batteryWatcher = nil
 local remainingTime = -2
 
+local function enableMenubar()
+  if (mod.context.config.enableMenubar and batteryMenu == nil) then
+    batteryMenu = hs.menubar:new()
+  end
+end
+
+local function disableMenubar()
+  if (mod.context.config.enableMenubar and batteryMenu ~= nil) then
+    batteryMenu:delete()
+    batteryMenu = nil
+  end
+end
+
 local function setTitle()
-  if (remainingTime == -2) then
-    batteryMenu:setTitle(mod.context.config.powerSupplyTitle)
-  elseif (remainingTime == -1) then
-    batteryMenu:setTitle(mod.context.config.calculatingTitle)
+  if (remainingTime < 0) then
+    disableMenubar()
   else
-    batteryMenu:setTitle(string.format(mod.context.config.batteryFormatTitle, ahf.lib.std.system.toTime(remainingTime).string))
+    enableMenubar()
+    batteryMenu:setTitle(string.format(mod.context.config.batteryText, ahf.lib.std.system.toTime(remainingTime).string))
   end
 end
 
@@ -28,23 +40,25 @@ end
 
 function mod.showRemainingTime()
   if (remainingTime == -2) then
-    hs.alert.show(mod.context.config.powerSupplyTitle)
+    hs.alert.show(mod.context.config.powerSupplyText)
   elseif (remainingTime == -1) then
-    hs.alert.show(mod.context.config.calculatingTitle)
+    hs.alert.show(mod.context.config.calculatingText)
   else
-    hs.alert.show(string.format(mod.context.config.batteryFormatTitle, ahf.lib.std.system.toTime(remainingTime).string))
+    hs.alert.show(string.format(mod.context.config.batteryText, ahf.lib.std.system.toTime(remainingTime).string))
   end
 end
 
 function mod.init()
-  if (mod.context.config.enableMenubar) then
-    batteryMenu = hs.menubar:new()
-  end
-
   refreshRemainingTime()
 
   batteryWatcher = hs.battery.watcher.new(refreshRemainingTime)
   batteryWatcher:start()
+end
+
+function mod.unload()
+  disableMenubar()
+  batteryWatcher:stop()
+  batteryWatcher = nil
 end
 
 return mod
