@@ -5,7 +5,7 @@
 
 ahf = require("ahf") -- Load ahf
 local ahfConfig = prequire("etc/ahf")
-ahf.init(prequire('etc/ahf')) -- Init and auto bootstrap ahf
+ahf.init(ahfConfig) -- Init and auto bootstrap ahf
 
 --[[
   END AHF SECTION
