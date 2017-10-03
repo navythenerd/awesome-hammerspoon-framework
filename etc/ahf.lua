@@ -11,6 +11,11 @@ config.env = {
 
 --Global hotkeys
 config.keymap = {
+    cmd = {"cmd"},
+    ctrl = {"ctrl"},
+    alt = {"alt"},
+    cmd_ctrl = {"cmd", "ctrl"},
+    ctrl_alt = {"ctrl", "alt"},
     hyper = {"cmd", "alt", "ctrl"},
     hyper_shift = {"shift", "cmd", "alt", "ctrl"},
 }
