@@ -11,23 +11,25 @@ The framework does the rest for you, e.g. loading dependencies, binding the hotk
    ```
    git clone https://gitlab.com/ckaufmann/hammerspoon-framework.git ~/.hammerspoon
    ```
-2. Edit `etc/modules.lua` to enable/disable the modules you want (by default all supplied extensions except `Redshift` are enabled).
+2. Edit `etc/ahf.lua` to enable/disable the modules you want (by default all supplied extensions except `Redshift` are enabled) or change other framework related settings such as hotkeys.
 3. Edit the corresponding config files for the extensions in `etc` directory (Read below to learn more about configuration).
-4. Edit `etc/keymap.lua` to change global hotkeys.
 
 ### Modules included
 
 By default the following modules are supplied (Inspiration by [Hammerspoon's sample configurations page](https://github.com/Hammerspoon/hammerspoon/wiki/Sample-Configurations)):
 
-- Redshift - Adjust screen brightness and gamma based on sunrise information (Inspired by [Redshift](https://github.com/jonls/redshift) and [f.lux](https://justgetflux.com/)).
+Since macOS natively supports some kind of `Redshift` functionality with its `Night Shift` feature, the `Redshift` module isn't going to be supported anymore and marked as deprecated. Nevertheless the module should work properly.
+
+
+
+- Redshift [DEPRECATED, see note above] - Adjust screen brightness and gamma based on sunrise information (Inspired by [Redshift](https://github.com/jonls/redshift) and [f.lux](https://justgetflux.com/)).
   - Temporally toggling off of Redshift is provided through `[CMD][ALT][CTRL][-]`
   - Redshift config is located at `etc/redshift.lua`.
 - Caffeine - Disable standby time for your screen.
-  - Caffeine can be toggled through menubar icon (Cup) or through hotkey `[SHIFT][CMD][ALT][CTRL][S]`.
+  - Caffeine can be toggled through menubar icon (Cup) or through hotkey `[SHIFT][CMD][ALT][CTRL][C]`.
   - Furthermore through `[CMD][ALT][CTRL][L]` you can lock your screen immediately.
   - Through `[CMD][ALT][CTRL][S]` Caffeine starts your Mac´s screensaver.
   - Through `[SHIFT][CMD][ALT][CTRL][S]` Caffeine puts your Mac into sleep-idle immediately.
-  - With `[SHIFT][CMD][ALT][CTRL][L]` Caffeine puts your Mac into sleep-idle after your screen was locked.
   - MonitorMode automatically disables/enables the display idle at connection/disconnection of an external monitor (Can be disabled through config)
   - Config is located at `etc/caffeine.lua`.
 - MouseLocator - Hightlights your cursor with a surrounding circle (Inspired by [Locator](https://github.com/zzamboni/oh-my-hammerspoon/blob/master/plugins/mouse/locator.lua)).
@@ -35,13 +37,15 @@ By default the following modules are supplied (Inspiration by [Hammerspoon's sam
   - Config is located at `etc/mouselocator.lua`.
 - Snap - Provides simple window management with full-screen, half-screen, quarter-screen.
   - Manage focused window through one of the following short-keys:
-    - full-screen: `[CMD][ALT][CTRL][F]`
-    - half-screen-left: `[CMD][ALT][CTRL][D]`
-    - half-screen-right: `[CMD][ALT][CTRL][G]`
-    - quarter-screen-left-top: `[CMD][ALT][CTRL][E]`
-    - quarter-screen-right-top: `[CMD][ALT][CTRL][R]`
-    - quarter-screen-left-bottom: `[CMD][ALT][CTRL][C]`
-    - quarter-screen-right-bottom: `[CMD][ALT][CTRL][V]`
+    - full-screen: `[CMD][ALT][CTRL][RETURN]`
+    - half-screen-left: `[CMD][ALT][CTRL][LEFT]`
+    - half-screen-right: `[CMD][ALT][CTRL][RIGHT]`
+    - half-screen-top: `[CMD][ALT][CTRL][UP]`
+    - half-screen-bottom: `[CMD][ALT][CTRL][DOWN]`
+    - quarter-screen-left-top: `[CMD][ALT][CTRL][U]`
+    - quarter-screen-right-top: `[CMD][ALT][CTRL][I]`
+    - quarter-screen-left-bottom: `[CMD][ALT][CTRL][J]`
+    - quarter-screen-right-bottom: `[CMD][ALT][CTRL][K]`
   - Config is located at `etc/snap.lua`.
 
 ## General stucture
