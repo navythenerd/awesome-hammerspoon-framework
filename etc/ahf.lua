@@ -16,13 +16,15 @@ config.keymap = {
     alt = {"alt"},
     cmd_ctrl = {"cmd", "ctrl"},
     ctrl_alt = {"ctrl", "alt"},
+    cmd_ctrl_shift = {"cmd", "ctrl", "shift"},
+    cmd_alt_shift = {"cmd", "alt", "shift"},
     hyper = {"cmd", "alt", "ctrl"},
     hyper_shift = {"shift", "cmd", "alt", "ctrl"},
 }
 
 --Hotkeys for internal framework functions
 config.hotkeys = {
-    reload = {hyper = "hyper", key = "1"},
+    reload = {hyper = "hyper_shift", key = "1"},
 }
 
 --Framework libraries
@@ -34,7 +36,6 @@ config.libraries = {
 config.loadModules = {
     "caffeine",
     "battery",
-    "mouselocator",
     "snap",
 }
 
