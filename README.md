@@ -9,7 +9,7 @@ The framework does the rest for you, e.g. loading dependencies, binding the hotk
 
 1. Check out this repository onto your `~/.hammerspoon` directory:
    ```
-   git clone https://gitlab.com/ckaufmann/hammerspoon-framework.git ~/.hammerspoon
+   git clone https://github.com/navythenerd/hammerspoon-framework.git ~/.hammerspoon
    ```
 2. Edit `etc/ahf.lua` to enable/disable the modules you want (by default all supplied extensions except `Redshift` are enabled) or change other framework related settings such as hotkeys.
 3. Edit the corresponding config files for the extensions in `etc` directory (Read below to learn more about configuration).
